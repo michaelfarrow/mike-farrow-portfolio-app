@@ -5,9 +5,11 @@
   "scripts": {
     "setup": "npm run fetch:studio",
     "dev": "npm run setup && concurrently --names 'studio,watch' -c 'bgGreen.bold,bgMagenta.bold' \"next dev --turbopack\" \"npm run watch\"",
-    "build": "npm run setup && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "predev": "npm run setup",
+    "prebuild": "npm run setup && npm run generate:types",
     "watch": "chokidar .studio/schema.json ./src/lib/sanity/queries --silent --initial -c 'npm run generate:types'",
     "generate:types": "npx sanity@`cat .studio/version` typegen generate",
     "fetch:studio": "tsx scripts/fetch-studio-info"
