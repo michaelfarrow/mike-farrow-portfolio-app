@@ -1,53 +1,44 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
-import { map, mapValues } from 'lodash';
 import { sanityFetch } from '@/lib/sanity/live';
-import { type PartialOnUndefinedDeep, type ArrayValues } from 'type-fest';
+import { PartialOnUndefinedDeep } from 'type-fest';
 
 export type Query = Parameters<typeof sanityFetch>[0]['query'];
 export type Params = Parameters<typeof sanityFetch>[0]['params'];
 
-export type NullToUndefined<T extends object | object[]> = T extends object[]
-  ? NullToUndefined<ArrayValues<T>>[]
-  : PartialOnUndefinedDeep<{
-      [Prop in keyof T]: null extends T[Prop]
-        ?
-            | (NonNullable<T[Prop]> extends object | object[]
-                ? NullToUndefined<NonNullable<T[Prop]>>
-                : NonNullable<T[Prop]>)
-            | undefined
-        : T[Prop] extends object | object[]
-          ? NullToUndefined<T[Prop]>
-          : T[Prop];
+type NullsToUndefined<T> = T extends null
+  ? undefined
+  : T extends Date
+    ? T
+    : {
+        [K in keyof T]: T[K] extends (infer U)[]
+          ? NullsToUndefined<U>[]
+          : NullsToUndefined<T[K]>;
+      };
 
-      // [Prop in keyof T]:
-      //   | (NonNullable<T[Prop]> extends object | object[]
-      //       ? NullToUndefined<NonNullable<T[Prop]>>
-      //       : NonNullable<T[Prop]>)
-      //   | (null extends T[Prop] ? undefined : null);
+function nullsToUndefined<T>(
+  obj: T
+): PartialOnUndefinedDeep<NullsToUndefined<T>, { recurseIntoArrays: true }> {
+  if (obj === null) {
+    return undefined as any;
+  }
 
-      // [Prop in keyof T]: NonNullable<T[Prop]> extends object | object[]
-      //   ? null extends T[Prop]
-      //     ? NullToUndefined<NonNullable<T[Prop]>> | undefined
-      //     : NullToUndefined<NonNullable<T[Prop]>>
-      //   : null extends T[Prop]
-      //     ? NonNullable<T[Prop]> | undefined
-      //     : NonNullable<T[Prop]>;
-    }>;
+  if (obj?.constructor.name === 'Object') {
+    for (const key in obj) {
+      obj[key] = nullsToUndefined(obj[key]) as any;
+    }
+  }
 
-function nullToUndefined<T extends object | object[]>(
-  o: T
-): NullToUndefined<T> {
-  return ((Array.isArray(o) ? map : mapValues) as any)(o, (v: any) => {
-    if (v === null) return undefined;
-    if (typeof v === 'object') return nullToUndefined(v);
-    return v;
-  });
+  if (Array.isArray(obj)) {
+    return obj.map(nullsToUndefined) as any;
+  }
+
+  return obj as any;
 }
 
 export async function fetch<T extends Query>(query: T, params?: Params) {
   const res = await sanityFetch({ query, params });
-  return nullToUndefined(res);
+  return nullsToUndefined(res);
 }
 
 export function createQuery<T extends Query>(query: T) {

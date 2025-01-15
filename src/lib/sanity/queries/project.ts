@@ -1,23 +1,61 @@
 import { createQuery } from '@/lib/sanity/query';
 import { defineQuery } from 'groq';
 
-const projectsQuery = defineQuery(`
-  *[_type == "project"]
+export const projectsQuery = defineQuery(`
+  *[_type == "project"] {
+    _id,
+    slug,
+    name,
+    description
+  }
 `);
 
-const projectQuery = defineQuery(`
+export const projectQuery = defineQuery(`
   *[
     _type == "project" &&
     slug.current == $slug
   ][0] {
-    ...,
+    name,
+    description,
     thumbnail {
-      ...,
-      asset->
+      asset -> {
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      }
     },
-    attributions[] {
+    content[] {
       ...,
-      contacts[]->
+      _type == "block" => {
+        ...,
+        markDefs[] {
+          ...,
+          _type == "internalLink" => {
+            reference->{
+              name
+            }
+          }
+        }
+      },
+      _type == "internalLinkBlock" => {
+        reference -> {
+          name,
+          description
+        }
+      }
+    },
+    contentShort[],
+    attributions[] {
+      _key,
+      name,
+      contacts[] -> {
+        _id,
+        name
+      }
     }
   }
 `);

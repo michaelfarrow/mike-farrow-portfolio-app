@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { PortableText } from '@portabletext/react';
 
 import { getProject } from '@/lib/sanity/queries/project';
+
+import { PortableText } from '@/components/PortableText';
 
 export default async function EventPage({
   params,
@@ -16,7 +17,8 @@ export default async function EventPage({
     notFound();
   }
 
-  const { name, description, attributions, thumbnail, content } = project;
+  const { name, description, attributions, thumbnail, content, contentShort } =
+    project;
 
   return (
     <div>
@@ -34,7 +36,31 @@ export default async function EventPage({
           height={thumbnail.asset.metadata?.dimensions?.height || 100}
         />
       ) : null}
-      <div>{content ? <PortableText value={content} /> : null}</div>
+      <div>
+        {content ? (
+          <PortableText
+            value={content}
+            components={{
+              types: {
+                internalLinkBlock: (block) => (
+                  <div>
+                    <b>{block.value.reference?.name}</b>:
+                    {block.value.reference?.description}
+                  </div>
+                ),
+              },
+              marks: {
+                internalLink: (mark) => (
+                  <span>
+                    {mark.text} ({mark.value?.reference?.name})
+                  </span>
+                ),
+              },
+            }}
+          />
+        ) : null}
+      </div>
+      <div>{contentShort ? <PortableText value={contentShort} /> : null}</div>
       <div>
         <h2>Attributions</h2>
         {attributions?.map((attr) => (
