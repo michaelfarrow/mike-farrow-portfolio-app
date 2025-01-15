@@ -1,0 +1,39 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "setup": "npm run fetch:studio",
+    "dev": "npm run setup && concurrently --names 'studio,watch' -c 'bgGreen.bold,bgMagenta.bold' \"next dev --turbopack\" \"npm run watch\"",
+    "build": "npm run setup && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "watch": "chokidar .studio/schema.json ./src/lib/sanity/queries --silent --initial -c 'npm run generate:types'",
+    "generate:types": "npx sanity@`cat .studio/version` typegen generate",
+    "fetch:studio": "tsx scripts/fetch-studio-info"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "next": "^15.1.4",
+    "next-sanity": "^9.8.35",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/lodash": "^4.17.14",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.4",
+    "tsx": "^4.19.2",
+    "type-fest": "^4.32.0",
+    "typescript": "^5"
+  },
+  "studio": {
+    "ref": "main"
+  }
+}
