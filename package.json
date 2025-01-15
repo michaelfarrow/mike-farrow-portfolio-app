@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "setup": "npm run fetch:studio",
-    "dev": "npm run setup && concurrently --names 'studio,watch' -c 'bgGreen.bold,bgMagenta.bold' \"next dev --turbopack\" \"npm run watch\"",
+    "dev": "concurrently --names 'studio,watch' -c 'bgGreen.bold,bgMagenta.bold' \"next dev --turbopack\" \"npm run watch\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -15,6 +15,7 @@
     "fetch:studio": "tsx scripts/fetch-studio-info"
   },
   "dependencies": {
+    "@portabletext/react": "^3.2.0",
     "lodash": "^4.17.21",
     "next": "^15.1.4",
     "next-sanity": "^9.8.35",

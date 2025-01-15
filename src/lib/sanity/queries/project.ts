@@ -11,6 +11,10 @@ const projectQuery = defineQuery(`
     slug.current == $slug
   ][0] {
     ...,
+    thumbnail {
+      ...,
+      asset->
+    },
     attributions[] {
       ...,
       contacts[]->
