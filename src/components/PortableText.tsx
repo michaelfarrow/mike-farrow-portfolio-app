@@ -16,7 +16,7 @@ export function PortableText<
   T extends TypedObject = PortableTextBlock,
   Blocks extends TypedObject = Exclude<T, { _type: 'block' }>,
   Marks extends PortableTextMarkDefinition = NonNullable<
-    Extract<T, { _type: 'block' }>['markDefs']
+    Extract<T, { markDefs?: PortableTextMarkDefinition[] }>['markDefs']
   >[number],
 >({
   value,
