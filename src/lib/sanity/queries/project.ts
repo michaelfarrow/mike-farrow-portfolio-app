@@ -18,15 +18,8 @@ export const projectQuery = defineQuery(`
     name,
     description,
     thumbnail {
-      asset -> {
-        url,
-        metadata {
-          dimensions {
-            width,
-            height
-          }
-        }
-      }
+      ...,
+      asset ->
     },
     content[] {
       ...,

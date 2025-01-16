@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 
 import { getProject } from '@/lib/sanity/queries/project';
+import { imageUrl } from '@/lib/image';
 
 import { PortableText } from '@/components/PortableText';
 
@@ -27,10 +28,10 @@ export default async function EventPage({
       </div>
       <div>{name ? <h1>{name}</h1> : null}</div>
       <div>{description ? <p>{description}</p> : null}</div>
-      {thumbnail?.asset?.url ? (
+      {thumbnail?.asset ? (
         <Image
           style={{ maxWidth: 700, height: 'auto' }}
-          src={thumbnail.asset.url}
+          src={imageUrl(thumbnail).url()}
           alt=''
           width={thumbnail.asset.metadata?.dimensions?.width || 100}
           height={thumbnail.asset.metadata?.dimensions?.height || 100}
