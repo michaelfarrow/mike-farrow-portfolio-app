@@ -30,8 +30,8 @@ export default async function EventPage({
       {thumbnail ? (
         <SanityPicture
           image={{ main: thumbnail }}
-          sizes='(max-width: 1500px) 100vw, 1500px'
-          style={{ width: '100%', maxWidth: 1500, height: 'auto' }}
+          sizes='(max-width: 800px) 100vw, 800px'
+          style={{ width: '100%', maxWidth: 800, height: 'auto' }}
         />
       ) : null}
       {/* {thumbnail ? (
@@ -54,9 +54,9 @@ export default async function EventPage({
                     {block.value.reference?.description}
                   </div>
                 ),
-                responsiveImage: (block) => (
-                  <SanityPicture image={block.value} sizes='100vw' />
-                ),
+                // responsiveImage: (block) => (
+                //   <SanityPicture image={block.value} sizes='100vw' />
+                // ),
               },
               marks: {
                 internalLink: (mark) => (

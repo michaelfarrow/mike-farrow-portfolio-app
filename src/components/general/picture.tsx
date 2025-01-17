@@ -63,12 +63,13 @@ export function Picture({
     <picture className={clsx(styles.picture, className)} {...rest}>
       {orderBy(images, 'max', 'asc').map(({ max, ...image }, i) => {
         const {
-          props: { srcSet, width, height },
+          props: { srcSet, sizes, width, height },
         } = imageProps(image);
 
         return (
           <source
             key={i}
+            sizes={sizes}
             width={width}
             height={height}
             media={max ? `(max-width: ${max - 1}px)` : undefined}
