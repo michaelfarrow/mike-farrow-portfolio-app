@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  useState,
-  useEffect,
-  SyntheticEvent,
-  useRef,
-  useCallback,
-} from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import clsx from 'clsx';
 
 import { useTimeout } from '@/hooks/timeout';
@@ -27,12 +21,9 @@ export function Image({ className, onImageLoaded, ...rest }: ImageProps) {
     if (onImageLoaded) onImageLoaded();
   }, 350);
 
-  const _onLoad = useCallback(
-    (e?: SyntheticEvent<HTMLImageElement, Event>) => {
-      setImageLoaded();
-    },
-    [setImageLoaded]
-  );
+  const _onLoad = useCallback(() => {
+    setImageLoaded();
+  }, [setImageLoaded]);
 
   useEffect(() => {
     if (image.current && image.current.complete) {
