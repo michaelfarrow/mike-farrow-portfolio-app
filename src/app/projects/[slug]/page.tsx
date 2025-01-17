@@ -54,9 +54,9 @@ export default async function EventPage({
                     {block.value.reference?.description}
                   </div>
                 ),
-                // responsiveImage: (block) => (
-                //   <SanityPicture image={block.value} sizes='100vw' />
-                // ),
+                responsiveImage: (block) => (
+                  <SanityPicture image={block.value} sizes='100vw' />
+                ),
               },
               marks: {
                 internalLink: (mark) => (
