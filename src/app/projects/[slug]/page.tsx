@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 
 import { getProject } from '@/lib/sanity/queries/project';
-import { imageUrl } from '@/lib/image';
 
 import { PortableText } from '@/components/PortableText';
+import { SanityPicture } from '@/components/sanity/picture';
 
 export default async function EventPage({
   params,
@@ -28,15 +27,21 @@ export default async function EventPage({
       </div>
       <div>{name ? <h1>{name}</h1> : null}</div>
       <div>{description ? <p>{description}</p> : null}</div>
-      {thumbnail?.asset ? (
-        <Image
-          style={{ maxWidth: 700, height: 'auto' }}
-          src={imageUrl(thumbnail).url()}
-          alt=''
-          width={thumbnail.asset.metadata?.dimensions?.width || 100}
-          height={thumbnail.asset.metadata?.dimensions?.height || 100}
+      {thumbnail ? (
+        <SanityPicture
+          image={{ main: thumbnail }}
+          sizes='(max-width: 1500px) 100vw, 1500px'
+          style={{ width: '100%', maxWidth: 1500, height: 'auto' }}
         />
       ) : null}
+      {/* {thumbnail ? (
+        <CroppedSanityImage
+          style={{ aspectRatio: 1 / 1, maxWidth: 200 }}
+          source={thumbnail}
+          alt=''
+        />
+      ) : null} */}
+
       <div>
         {content ? (
           <PortableText
@@ -48,6 +53,9 @@ export default async function EventPage({
                     <b>{block.value.reference?.name}</b>:
                     {block.value.reference?.description}
                   </div>
+                ),
+                responsiveImage: (block) => (
+                  <SanityPicture image={block.value} sizes='100vw' />
                 ),
               },
               marks: {
