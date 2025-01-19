@@ -9,8 +9,9 @@ import type {
 } from '@portabletext/react';
 
 import { PortableText as PortableTextReact } from '@portabletext/react';
+import { SetOptional } from 'type-fest';
 
-type TypedObject = Omit<PortableTextBlock, 'children'>;
+type TypedObject = SetOptional<PortableTextBlock, 'children'>;
 
 export function PortableText<
   T extends TypedObject = PortableTextBlock,
