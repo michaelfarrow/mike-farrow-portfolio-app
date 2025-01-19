@@ -36,13 +36,5 @@ export function PortableText<
     };
   };
 }) {
-  return (
-    <PortableTextReact
-      value={value}
-      components={{
-        ...components,
-        block: { internalLinkBlock: () => <div>Block</div> },
-      }}
-    />
-  );
+  return <PortableTextReact value={value} components={components} />;
 }
