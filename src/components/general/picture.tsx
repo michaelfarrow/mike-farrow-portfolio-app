@@ -17,7 +17,7 @@ export type PictureImage = {
 
 export interface PictureProps
   extends React.ComponentPropsWithoutRef<'picture'>,
-    Pick<ImageProps, 'alt' | 'loader' | 'sizes' | 'quality'> {
+    Pick<ImageProps, 'alt' | 'loader' | 'quality'> {
   images: PictureImage[];
   sizes?: string;
   onImageLoaded?: () => void;
