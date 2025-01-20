@@ -45,8 +45,6 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
     })
     .filter((image) => !!image);
 
-  if (!images.length) return null;
-
   return (
     <Picture
       {...rest}

@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
-
 'use client';
 
 import clsx from 'clsx';
@@ -16,17 +14,6 @@ export type PictureImage = {
   height: number;
   max?: number;
 };
-
-const imagePropsBuilder =
-  (common: Partial<ImageProps> & { alt: string }) => (image: PictureImage) => {
-    const { src, width, height } = image;
-    return getImageProps({
-      ...common,
-      src,
-      width,
-      height,
-    });
-  };
 
 export interface PictureProps
   extends React.ComponentPropsWithoutRef<'picture'>,
@@ -46,19 +33,24 @@ export function Picture({
   onImageLoaded,
   ...rest
 }: PictureProps) {
-  const defaultImageConfig =
-    images.find(({ max }) => !max) ||
-    (images.length && images[images.length - 1]) ||
-    undefined;
+  if (!images.length) return null;
 
-  const imageProps = imagePropsBuilder({
-    alt,
-    loader,
-    sizes,
-    quality: quality || IMAGE_DEFAULT_QUALITY,
-  });
+  const defaultImage =
+    images.find(({ max }) => !max) || images[images.length - 1];
 
-  const defaultImage = defaultImageConfig && imageProps(defaultImageConfig);
+  const imageProps = (image: PictureImage) => {
+    const { src, width, height } = image;
+
+    return getImageProps({
+      alt: '',
+      quality: quality || IMAGE_DEFAULT_QUALITY,
+      loader,
+      sizes,
+      src,
+      width,
+      height,
+    });
+  };
 
   return (
     <picture className={clsx(styles.picture, className)} {...rest}>
@@ -78,15 +70,14 @@ export function Picture({
           />
         );
       })}
-      {(defaultImage && (
-        <Image
-          {...defaultImage.props}
-          quality={quality}
-          loader={loader}
-          onImageLoaded={onImageLoaded}
-        />
-      )) ||
-        null}
+      <Image
+        {...defaultImage}
+        alt={alt}
+        quality={quality}
+        loader={loader}
+        sizes={sizes}
+        onImageLoaded={onImageLoaded}
+      />
     </picture>
   );
 }

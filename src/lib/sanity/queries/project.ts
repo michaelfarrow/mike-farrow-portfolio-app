@@ -52,7 +52,11 @@ export const projectQuery = defineQuery(`
             asset ->
           },
         }
-      }
+      },
+      _type == "image" => {
+        ...,
+        asset ->
+      },
     },
     contentShort[],
     contentAlt[] {

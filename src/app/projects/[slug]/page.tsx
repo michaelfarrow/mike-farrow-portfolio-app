@@ -39,7 +39,6 @@ export default async function EventPage({
 
       {thumbnail ? (
         <SanityImage
-          alt=':'
           image={thumbnail}
           sizes='(max-width: 800px) 100vw, 800px'
           style={{ width: '100%', maxWidth: 800, height: 'auto' }}
@@ -50,7 +49,9 @@ export default async function EventPage({
           <Array
             value={contentAlt}
             components={{
-              image: (block) => <SanityImage image={block.value} />,
+              image: (block) => (
+                <SanityImage image={block.value} sizes='100vw' />
+              ),
               responsiveImage: (block) => (
                 <SanityPicture image={block.value} sizes='100vw' />
               ),
@@ -78,6 +79,9 @@ export default async function EventPage({
                 ),
                 responsiveImage: (block) => (
                   <SanityPicture image={block.value} sizes='100vw' />
+                ),
+                image: (block) => (
+                  <SanityImage image={block.value} sizes='100vw' />
                 ),
               },
               marks: {
