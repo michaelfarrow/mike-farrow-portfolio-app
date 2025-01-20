@@ -2,16 +2,24 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import clsx from 'clsx';
+import { default as NextImage, ImageProps as NextImageProps } from 'next/image';
 
 import { useTimeout } from '@/hooks/timeout';
 
 import styles from './image.module.css';
 
-export interface ImageProps extends React.ComponentPropsWithoutRef<'img'> {
+export const IMAGE_DEFAULT_QUALITY = 70;
+
+export interface ImageProps extends NextImageProps {
   onImageLoaded?: () => void;
 }
 
-export function Image({ className, onImageLoaded, ...rest }: ImageProps) {
+export function Image({
+  className,
+  onImageLoaded,
+  quality,
+  ...rest
+}: ImageProps) {
   const image = useRef<HTMLImageElement>(null);
 
   const [loaded, setLoaded] = useState(false);
@@ -32,10 +40,9 @@ export function Image({ className, onImageLoaded, ...rest }: ImageProps) {
   }, [image, _onLoad]);
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-    <img
-      loading='lazy'
+    <NextImage
       {...rest}
+      quality={quality || IMAGE_DEFAULT_QUALITY}
       className={clsx(styles.image, loaded && styles.loaded, className)}
       ref={image}
       onLoad={_onLoad}

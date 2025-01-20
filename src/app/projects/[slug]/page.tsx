@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 
 import { getProject } from '@/lib/sanity/queries/project';
 
-import { PortableText } from '@/components/PortableText';
+import { Array } from '@/components/sanity/array';
+import { PortableText } from '@/components/sanity/portable-text';
 import { SanityPicture } from '@/components/sanity/picture';
+import { SanityImage } from '@/components/sanity/image';
 
 export default async function EventPage({
   params,
@@ -17,8 +19,15 @@ export default async function EventPage({
     notFound();
   }
 
-  const { name, description, attributions, thumbnail, content, contentShort } =
-    project;
+  const {
+    name,
+    description,
+    attributions,
+    thumbnail,
+    content,
+    contentShort,
+    contentAlt,
+  } = project;
 
   return (
     <div>
@@ -27,21 +36,34 @@ export default async function EventPage({
       </div>
       <div>{name ? <h1>{name}</h1> : null}</div>
       <div>{description ? <p>{description}</p> : null}</div>
+
       {thumbnail ? (
-        <SanityPicture
-          image={{ main: thumbnail }}
+        <SanityImage
+          alt=':'
+          image={thumbnail}
           sizes='(max-width: 800px) 100vw, 800px'
           style={{ width: '100%', maxWidth: 800, height: 'auto' }}
         />
       ) : null}
-      {/* {thumbnail ? (
-        <CroppedSanityImage
-          style={{ aspectRatio: 1 / 1, maxWidth: 200 }}
-          source={thumbnail}
-          alt=''
-        />
-      ) : null} */}
-
+      {(contentAlt && (
+        <div>
+          <Array
+            value={contentAlt}
+            components={{
+              image: (block) => <SanityImage image={block.value} />,
+              responsiveImage: (block) => (
+                <SanityPicture image={block.value} sizes='100vw' />
+              ),
+              richText: (block) =>
+                (block.value.content && (
+                  <PortableText value={block.value.content} />
+                )) ||
+                null,
+            }}
+          />
+        </div>
+      )) ||
+        null}
       <div>
         {content ? (
           <PortableText

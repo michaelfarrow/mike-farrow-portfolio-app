@@ -55,6 +55,26 @@ export const projectQuery = defineQuery(`
       }
     },
     contentShort[],
+    contentAlt[] {
+      ...,
+      _type == "image" => {
+        ...,
+        asset ->
+      },
+      _type == "responsiveImage" => {
+        main {
+          ...,
+          asset ->
+        },
+        alternative[] {
+          ...,
+          image {
+            ...,
+            asset ->
+          },
+        }
+      }
+    },
     attributions[] {
       _key,
       name,

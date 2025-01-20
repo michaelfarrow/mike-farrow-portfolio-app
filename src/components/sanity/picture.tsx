@@ -2,9 +2,8 @@ import { Picture, PictureProps } from '@/components/general/picture';
 import { imageLoader } from 'next-sanity/image';
 
 import type { CommonSchemaType } from '@/types/content';
-import { imageUrl } from '@/lib/image';
+import { getSanityImageProps } from '@/components/sanity/image';
 
-export type SanityImage = CommonSchemaType<'image'>;
 export type SanityPictureImage = CommonSchemaType<'responsiveImage'>;
 
 export interface SanityPictureProps
@@ -25,37 +24,28 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
     .map((image) => {
       const { source, breakpoint } = image;
 
-      const crop = {
-        ...{
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-        },
-        ...source?.crop,
-      };
+      if (source) {
+        const props = getSanityImageProps(source);
 
-      const url = source?.asset?.url;
-      const width = source?.asset?.metadata?.dimensions?.width;
-      const height = source?.asset?.metadata?.dimensions?.height;
-
-      if (source && url && width && height) {
-        return {
-          src: imageUrl(source).url(),
-          width: Math.round(width * (1 - (crop.left + crop.right))),
-          height: Math.round(height * (1 - (crop.top + crop.bottom))),
-          max:
-            breakpoint === 'mobile'
-              ? 600
-              : breakpoint === 'tablet'
-                ? 1000
-                : undefined,
-        };
+        return (
+          (props && {
+            ...props,
+            max:
+              breakpoint === 'mobile'
+                ? 600
+                : breakpoint === 'tablet'
+                  ? 1000
+                  : undefined,
+          }) ||
+          null
+        );
       }
 
       return null;
     })
     .filter((image) => !!image);
+
+  if (!images.length) return null;
 
   return (
     <Picture

@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { orderBy } from 'lodash';
 import { getImageProps, ImageProps } from 'next/image';
 
-import { Image } from '@/components/general/image';
+import { Image, IMAGE_DEFAULT_QUALITY } from '@/components/general/image';
 
 import styles from './picture.module.css';
 
@@ -25,13 +25,12 @@ const imagePropsBuilder =
       src,
       width,
       height,
-      quality: 70,
     });
   };
 
 export interface PictureProps
   extends React.ComponentPropsWithoutRef<'picture'>,
-    Pick<ImageProps, 'alt' | 'loader' | 'sizes'> {
+    Pick<ImageProps, 'alt' | 'loader' | 'sizes' | 'quality'> {
   images: PictureImage[];
   sizes?: string;
   onImageLoaded?: () => void;
@@ -41,6 +40,7 @@ export function Picture({
   className,
   images,
   alt,
+  quality,
   loader,
   sizes,
   onImageLoaded,
@@ -55,6 +55,7 @@ export function Picture({
     alt,
     loader,
     sizes,
+    quality: quality || IMAGE_DEFAULT_QUALITY,
   });
 
   const defaultImage = defaultImageConfig && imageProps(defaultImageConfig);
@@ -78,7 +79,12 @@ export function Picture({
         );
       })}
       {(defaultImage && (
-        <Image {...defaultImage.props} onImageLoaded={onImageLoaded} />
+        <Image
+          {...defaultImage.props}
+          quality={quality}
+          loader={loader}
+          onImageLoaded={onImageLoaded}
+        />
       )) ||
         null}
     </picture>
