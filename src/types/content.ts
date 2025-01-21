@@ -7,7 +7,8 @@ import { PartialDeep } from 'type-fest';
 export type SchemaTypes = AllSanitySchemaTypes['_type'];
 
 export type SchemaType<T extends SchemaTypes> = PartialDeep<
-  ExpandRefs<Extract<AllSanitySchemaTypes, { _type: T }>>
+  ExpandRefs<Extract<AllSanitySchemaTypes, { _type: T }>>,
+  { recurseIntoArrays: true }
 >;
 
 export type CommonSchema = SchemaType<'common'>;

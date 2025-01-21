@@ -1,6 +1,7 @@
 import { Picture, PictureProps } from '@/components/general/picture';
 import { imageLoader } from 'next-sanity/image';
 
+import { BREAKPOINTS } from '@/lib/responsive';
 import type { CommonSchemaType } from '@/types/content';
 import { getSanityImageProps } from '@/components/sanity/image';
 
@@ -15,10 +16,12 @@ export interface SanityPictureProps
 export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
   const images = [
     (image.main && { source: image.main, breakpoint: undefined }) || undefined,
-    ...(image?.alternative || []).map((altImage) => ({
-      source: altImage.image,
-      breakpoint: altImage.breakpoint,
-    })),
+    ...(image?.alternative || [])
+      .filter((altImage) => !!altImage)
+      .map((altImage) => ({
+        source: altImage.image,
+        breakpoint: altImage.breakpoint,
+      })),
   ]
     .filter((image) => !!image)
     .map((image) => {
@@ -30,12 +33,7 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
         return (
           (props && {
             ...props,
-            max:
-              breakpoint === 'mobile'
-                ? 600
-                : breakpoint === 'tablet'
-                  ? 1000
-                  : undefined,
+            max: breakpoint && BREAKPOINTS[breakpoint],
           }) ||
           null
         );

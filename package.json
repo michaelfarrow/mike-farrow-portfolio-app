@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "type-check": "tsc --noEmit --incremental",
     "predev": "npm run setup",
     "prebuild": "npm run setup && npm run generate:types",
     "watch": "chokidar .studio/schema.json ./src/lib/sanity/queries --silent --initial -c 'npm run generate:types'",
