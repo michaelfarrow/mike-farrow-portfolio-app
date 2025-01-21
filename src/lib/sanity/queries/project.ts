@@ -1,6 +1,8 @@
 import { createQuery } from '@/lib/sanity/query';
 import { defineQuery } from 'groq';
 
+import { imageQuery, responsiveImageQuery } from './common/image';
+
 export const projectsQuery = defineQuery(`
   *[_type == "project"] {
     _id,
@@ -17,67 +19,11 @@ export const projectQuery = defineQuery(`
   ][0] {
     name,
     description,
-    thumbnail {
-      ...,
-      asset ->
-    },
+    thumbnail ${imageQuery},
     content[] {
       ...,
-      _type == "block" => {
-        ...,
-        markDefs[] {
-          ...,
-          _type == "internalLink" => {
-            reference->{
-              name
-            }
-          }
-        }
-      },
-      _type == "internalLinkBlock" => {
-        reference -> {
-          name,
-          description
-        }
-      },
-      _type == "responsiveImage" => {
-        main {
-          ...,
-          asset ->
-        },
-        alternative[] {
-          ...,
-          image {
-            ...,
-            asset ->
-          },
-        }
-      },
-      _type == "image" => {
-        ...,
-        asset ->
-      },
-    },
-    contentShort[],
-    contentAlt[] {
-      ...,
-      _type == "image" => {
-        ...,
-        asset ->
-      },
-      _type == "responsiveImage" => {
-        main {
-          ...,
-          asset ->
-        },
-        alternative[] {
-          ...,
-          image {
-            ...,
-            asset ->
-          },
-        }
-      }
+      _type == "image" => ${imageQuery},
+      _type == "responsiveImage" => ${responsiveImageQuery}
     },
     attributions[] {
       _key,

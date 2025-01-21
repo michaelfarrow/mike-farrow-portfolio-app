@@ -44,6 +44,8 @@ export function SanityImage({ image, alt, ...rest }: SanityImageProps) {
   if (!props) return null;
   return (
     <Image
+      // placeholder='blur'
+      // blurDataURL={image.asset?.metadata?.lqip}
       {...rest}
       {...props}
       alt={alt || image.alt || ''}

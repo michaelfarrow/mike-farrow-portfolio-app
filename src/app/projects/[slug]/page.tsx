@@ -19,15 +19,7 @@ export default async function EventPage({
     notFound();
   }
 
-  const {
-    name,
-    description,
-    attributions,
-    thumbnail,
-    content,
-    contentShort,
-    contentAlt,
-  } = project;
+  const { name, description, attributions, thumbnail, content } = project;
 
   return (
     <div>
@@ -36,7 +28,6 @@ export default async function EventPage({
       </div>
       <div>{name ? <h1>{name}</h1> : null}</div>
       <div>{description ? <p>{description}</p> : null}</div>
-
       {thumbnail ? (
         <SanityImage
           image={thumbnail}
@@ -44,58 +35,25 @@ export default async function EventPage({
           style={{ width: '100%', maxWidth: 800, height: 'auto' }}
         />
       ) : null}
-      {(contentAlt && (
-        <div>
+      <div>
+        {content ? (
           <Array
-            value={contentAlt}
+            value={content}
             components={{
-              image: (block) => (
-                <SanityImage image={block.value} sizes='100vw' />
-              ),
+              richText: (block) =>
+                block.value.content && (
+                  <PortableText value={block.value.content || null} />
+                ),
               responsiveImage: (block) => (
                 <SanityPicture image={block.value} sizes='100vw' />
               ),
-              richText: (block) =>
-                (block.value.content && (
-                  <PortableText value={block.value.content} />
-                )) ||
-                null,
-            }}
-          />
-        </div>
-      )) ||
-        null}
-      <div>
-        {content ? (
-          <PortableText
-            value={content}
-            components={{
-              types: {
-                internalLinkBlock: (block) => (
-                  <div>
-                    <b>{block.value.reference?.name}</b>:
-                    {block.value.reference?.description}
-                  </div>
-                ),
-                responsiveImage: (block) => (
-                  <SanityPicture image={block.value} sizes='100vw' />
-                ),
-                image: (block) => (
-                  <SanityImage image={block.value} sizes='100vw' />
-                ),
-              },
-              marks: {
-                internalLink: (mark) => (
-                  <span>
-                    {mark.text} ({mark.value?.reference?.name})
-                  </span>
-                ),
-              },
+              image: (block) => (
+                <SanityImage image={block.value} sizes='100vw' />
+              ),
             }}
           />
         ) : null}
       </div>
-      <div>{contentShort ? <PortableText value={contentShort} /> : null}</div>
       <div>
         <h2>Attributions</h2>
         {attributions?.map((attr) => (

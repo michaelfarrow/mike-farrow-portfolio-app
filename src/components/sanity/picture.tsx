@@ -48,8 +48,8 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
   return (
     <Picture
       {...rest}
-      images={images}
       alt={alt || image.main?.alt || ''}
+      images={images}
       loader={imageLoader}
     />
   );
