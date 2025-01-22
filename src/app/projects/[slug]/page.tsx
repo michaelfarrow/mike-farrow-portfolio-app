@@ -8,6 +8,7 @@ import { PortableText } from '@/components/sanity/portable-text';
 import { SanityImage } from '@/components/sanity/image';
 import { ContentPicture } from '@/components/content/picture';
 import { ContentImage } from '@/components/content/image';
+import { ContentVideo } from '@/components/content/video';
 import { Figure } from '@/components/general/figure';
 import { getExifData } from '@/lib/image';
 
@@ -29,7 +30,7 @@ export default async function EventPage({
     exif?.settings && Object.values(exif.settings).filter((v) => !!v);
 
   return (
-    <div>
+    <div style={{ maxWidth: 1500, margin: 'auto' }}>
       <div>
         <Link href='/'>← Back to projects</Link>
       </div>
@@ -68,6 +69,7 @@ export default async function EventPage({
                 <ContentPicture image={block.value} />
               ),
               image: (block) => <ContentImage image={block.value} />,
+              video: (block) => <ContentVideo video={block.value} />,
             }}
           />
         ) : null}

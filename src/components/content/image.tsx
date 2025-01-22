@@ -1,16 +1,16 @@
-import { Captioned } from '@/components/content/captioned';
+import { breakpointSizes } from '@/lib/responsive';
+
+import { Captioned, CaptionedProps } from '@/components/content/captioned';
 import { SanityImage, SanityImageProps } from '@/components/sanity/image';
 
 export interface ContentImageProps
-  extends React.ComponentPropsWithoutRef<'div'>,
+  extends Omit<CaptionedProps, 'caption'>,
     Pick<SanityImageProps, 'image'> {}
 
 export function ContentImage({ image, ...rest }: ContentImageProps) {
   return (
-    <div {...rest}>
-      <Captioned caption={image.caption}>
-        <SanityImage image={image} />
-      </Captioned>
-    </div>
+    <Captioned {...rest} caption={image.caption}>
+      <SanityImage image={image} sizes={breakpointSizes({ max: true })} />
+    </Captioned>
   );
 }

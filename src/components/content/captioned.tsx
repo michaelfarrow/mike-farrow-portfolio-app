@@ -1,15 +1,19 @@
-import { Figure, FigureProps } from '@/components/general/figure';
+import { Figure } from '@/components/general/figure';
 
-export interface CaptionedProps extends Omit<FigureProps, 'caption'> {
+export interface CaptionedProps extends React.ComponentPropsWithoutRef<'div'> {
   caption?: string;
 }
 
 export function Captioned({ caption, children, ...rest }: CaptionedProps) {
-  return caption ? (
-    <Figure {...rest} caption={caption}>
-      {children}
-    </Figure>
-  ) : (
-    children
+  return (
+    <div {...rest}>
+      {caption ? (
+        <Figure {...rest} caption={caption}>
+          {children}
+        </Figure>
+      ) : (
+        children
+      )}
+    </div>
   );
 }
