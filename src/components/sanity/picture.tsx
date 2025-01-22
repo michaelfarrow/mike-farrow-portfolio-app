@@ -1,8 +1,9 @@
-import { Picture, PictureProps } from '@/components/general/picture';
+import type { CommonSchemaType } from '@/types/content';
+
 import { imageLoader } from 'next-sanity/image';
 
 import { BREAKPOINTS } from '@/lib/responsive';
-import type { CommonSchemaType } from '@/types/content';
+import { Picture, PictureProps } from '@/components/general/picture';
 import { getSanityImageProps } from '@/components/sanity/image';
 
 export type SanityPictureImage = CommonSchemaType<'responsiveImage'>;
@@ -42,6 +43,8 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
       return null;
     })
     .filter((image) => !!image);
+
+  console.log(image.main?.caption);
 
   return (
     <Picture

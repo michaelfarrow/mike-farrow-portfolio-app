@@ -1,21 +1,48 @@
-import { defineQuery } from 'next-sanity';
+export const imageCommonQuery = `
+  alt,
+  caption,
+  crop,
+  hotspot
+`;
 
-export const imageQuery = defineQuery(`
+export const imageAssetCommonQuery = `
+  url
+`;
+
+export const imageDimensionsQuery = `
+  dimensions {
+    width,
+    height
+  }
+`;
+
+export const imageQuery = `
   {
-    alt,
+    ${imageCommonQuery},
     asset -> {
-      url,
+      ${imageAssetCommonQuery},
       metadata {
-        dimensions {
-          width,
-          height
-        }
+        ${imageDimensionsQuery}
       }
     }
   }
-`);
+`;
 
-export const responsiveImageQuery = defineQuery(`
+export const imageWithMetadataQuery = `
+  {
+    ${imageCommonQuery},
+    asset -> {
+      ${imageAssetCommonQuery},
+      metadata {
+        ${imageDimensionsQuery},
+        image,
+        exif
+      }
+    }
+  }
+`;
+
+export const responsiveImageQuery = `
   {
     main ${imageQuery},
     alternative[] {
@@ -23,4 +50,4 @@ export const responsiveImageQuery = defineQuery(`
       image ${imageQuery},
     }
   }
-`);
+`;

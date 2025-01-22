@@ -1,7 +1,11 @@
 import { createQuery } from '@/lib/sanity/query';
 import { defineQuery } from 'groq';
 
-import { imageQuery, responsiveImageQuery } from './common/image';
+import {
+  imageQuery,
+  imageWithMetadataQuery,
+  responsiveImageQuery,
+} from './common/image';
 
 export const projectsQuery = defineQuery(`
   *[_type == "project"] {
@@ -19,7 +23,7 @@ export const projectQuery = defineQuery(`
   ][0] {
     name,
     description,
-    thumbnail ${imageQuery},
+    thumbnail ${imageWithMetadataQuery},
     content[] {
       ...,
       _type == "image" => ${imageQuery},

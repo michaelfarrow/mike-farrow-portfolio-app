@@ -5,8 +5,11 @@ import { getProject } from '@/lib/sanity/queries/project';
 
 import { Array } from '@/components/sanity/array';
 import { PortableText } from '@/components/sanity/portable-text';
-import { SanityPicture } from '@/components/sanity/picture';
 import { SanityImage } from '@/components/sanity/image';
+import { ContentPicture } from '@/components/content/picture';
+import { ContentImage } from '@/components/content/image';
+import { Figure } from '@/components/general/figure';
+import { getExifData } from '@/lib/image';
 
 export default async function EventPage({
   params,
@@ -21,6 +24,10 @@ export default async function EventPage({
 
   const { name, description, attributions, thumbnail, content } = project;
 
+  const exif = thumbnail ? getExifData(thumbnail) : null;
+  const settings =
+    exif?.settings && Object.values(exif.settings).filter((v) => !!v);
+
   return (
     <div>
       <div>
@@ -29,11 +36,24 @@ export default async function EventPage({
       <div>{name ? <h1>{name}</h1> : null}</div>
       <div>{description ? <p>{description}</p> : null}</div>
       {thumbnail ? (
-        <SanityImage
-          image={thumbnail}
-          sizes='(max-width: 800px) 100vw, 800px'
-          style={{ width: '100%', maxWidth: 800, height: 'auto' }}
-        />
+        <Figure
+          caption={
+            (exif && (
+              <>
+                {exif.camera && <div>{exif.camera}</div>}
+                {exif.lens && <div>{exif.lens}</div>}
+                {(settings && <div>{settings.join(' ')}</div>) || null}
+              </>
+            )) ||
+            null
+          }
+        >
+          <SanityImage
+            image={thumbnail}
+            sizes='(max-width: 800px) 100vw, 800px'
+            style={{ width: '100%', maxWidth: 800, height: 'auto' }}
+          />
+        </Figure>
       ) : null}
       <div>
         {content ? (
@@ -45,11 +65,9 @@ export default async function EventPage({
                   <PortableText value={block.value.content || null} />
                 ),
               responsiveImage: (block) => (
-                <SanityPicture image={block.value} sizes='100vw' />
+                <ContentPicture image={block.value} />
               ),
-              image: (block) => (
-                <SanityImage image={block.value} sizes='100vw' />
-              ),
+              image: (block) => <ContentImage image={block.value} />,
             }}
           />
         ) : null}

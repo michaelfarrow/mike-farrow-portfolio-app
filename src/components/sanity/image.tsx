@@ -1,9 +1,9 @@
-import { Image, ImageProps } from '@/components/general/image';
+import type { CommonSchemaType } from '@/types/content';
+
 import { imageLoader } from 'next-sanity/image';
 
 import { imageUrl } from '@/lib/image';
-
-import type { CommonSchemaType } from '@/types/content';
+import { Image, ImageProps } from '@/components/general/image';
 
 export type SanityImage = CommonSchemaType<'image'>;
 
