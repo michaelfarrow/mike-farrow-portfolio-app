@@ -7,6 +7,7 @@ const config = {
     '^@/types/(.*)$',
     '^@/(lib|hooks)/(.*)$',
     '^@/components/(.*)$',
+    '^@/(.*)$',
     '^[./]',
   ],
   importOrderSeparation: true,
