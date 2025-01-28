@@ -1,11 +1,11 @@
 import { defineQuery } from 'groq';
 
-import { createQuery } from '@/lib/sanity/query';
 import {
   imageQuery,
   responsiveImageQuery,
 } from '@/lib/sanity/queries/common/image';
 import { videoQuery } from '@/lib/sanity/queries/common/video';
+import { createQuery } from '@/lib/sanity/query';
 
 export const projectsQuery = defineQuery(`
   *[_type == "project"] {

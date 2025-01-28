@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
 import clsx from 'clsx';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import { default as NextImage, ImageProps as NextImageProps } from 'next/image';
 
 import { useTimeout } from '@/hooks/timeout';

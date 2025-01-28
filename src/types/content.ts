@@ -1,8 +1,9 @@
+import { PartialDeep } from 'type-fest';
+
 import {
   AllSanitySchemaTypes,
   internalGroqTypeReferenceTo,
 } from '@/types/sanity';
-import { PartialDeep } from 'type-fest';
 
 export type SchemaTypes = AllSanitySchemaTypes['_type'];
 

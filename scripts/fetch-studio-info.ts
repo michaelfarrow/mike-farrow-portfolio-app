@@ -1,5 +1,6 @@
+import { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
-import { writeFile, mkdir } from 'fs/promises';
+
 import rootPackage from '../package.json';
 
 const REPO = 'michaelfarrow/mike-farrow-portfolio-studio';

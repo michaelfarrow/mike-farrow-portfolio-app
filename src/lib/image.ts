@@ -1,11 +1,11 @@
-import type { CommonSchemaType } from '@/types/content';
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
-
 import imageUrlBuilder from '@sanity/image-url';
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 import numToFraction from 'num2fraction';
 
-import { client } from '@/lib/sanity/client';
+import type { CommonSchemaType } from '@/types/content';
+
 import { romanize } from '@/lib/number';
+import { client } from '@/lib/sanity/client';
 
 const builder = imageUrlBuilder(client);
 
@@ -28,11 +28,6 @@ export type ExifData = {
 export function imageUrl(source: SanityImageSource) {
   return builder.image(source);
 }
-
-// export function processExif<T>(v?: string | number, process: (v: )) {
-//   if(v === undefined) return undefined
-
-// }
 
 export function processExif<T>(
   transform: (v: string | number) => T | undefined

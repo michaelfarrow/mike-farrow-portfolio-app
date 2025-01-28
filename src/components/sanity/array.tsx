@@ -1,5 +1,4 @@
 import type { ComponentType } from 'react';
-
 import React, { Fragment } from 'react';
 
 export type ArrayItem = {

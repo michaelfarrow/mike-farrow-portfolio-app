@@ -13,7 +13,8 @@
     "prebuild": "npm run setup && npm run generate:types",
     "watch": "chokidar .studio/schema.json ./src/lib/sanity/queries --silent --initial -c 'npm run generate:types'",
     "generate:types": "npx sanity@`cat .studio/version` typegen generate",
-    "fetch:studio": "tsx scripts/fetch-studio-info"
+    "fetch:studio": "tsx scripts/fetch-studio-info",
+    "prettier": "prettier './**/*.{js,ts,tsx,mjs,cjs,json,yml}' --write"
   },
   "dependencies": {
     "@portabletext/react": "^3.2.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/lodash": "^4.17.14",
     "@types/node": "^20",
     "@types/num2fraction": "^1.2.2",

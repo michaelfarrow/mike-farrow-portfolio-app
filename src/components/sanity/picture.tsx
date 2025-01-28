@@ -1,8 +1,9 @@
-import type { CommonSchemaType } from '@/types/content';
-
 import { imageLoader } from 'next-sanity/image';
 
+import type { CommonSchemaType } from '@/types/content';
+
 import { BREAKPOINTS } from '@/lib/responsive';
+
 import { Picture, PictureProps } from '@/components/general/picture';
 import { getSanityImageProps } from '@/components/sanity/image';
 

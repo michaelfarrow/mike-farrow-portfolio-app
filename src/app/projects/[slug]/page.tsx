@@ -1,16 +1,16 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { getExifData } from '@/lib/image';
 import { getProject } from '@/lib/sanity/queries/project';
 
-import { Array } from '@/components/sanity/array';
-import { PortableText } from '@/components/sanity/portable-text';
-import { SanityImage } from '@/components/sanity/image';
-import { ContentPicture } from '@/components/content/picture';
 import { ContentImage } from '@/components/content/image';
+import { ContentPicture } from '@/components/content/picture';
 import { ContentVideo } from '@/components/content/video';
 import { Figure } from '@/components/general/figure';
-import { getExifData } from '@/lib/image';
+import { Array } from '@/components/sanity/array';
+import { SanityImage } from '@/components/sanity/image';
+import { PortableText } from '@/components/sanity/portable-text';
 
 export default async function EventPage({
   params,

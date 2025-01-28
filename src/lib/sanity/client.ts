@@ -1,4 +1,5 @@
 import { createClient } from '@sanity/client';
+
 import { STUDIO_BASE_URL, STUDIO_CONFIG } from '@/lib/env';
 
 export const client = createClient({

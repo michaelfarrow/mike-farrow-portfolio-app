@@ -1,6 +1,7 @@
-import type { CommonSchemaType } from '@/types/content';
-import getYouTubeID from 'get-youtube-id';
 import clsx from 'clsx';
+import getYouTubeID from 'get-youtube-id';
+
+import type { CommonSchemaType } from '@/types/content';
 
 import styles from './video.module.css';
 

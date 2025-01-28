@@ -1,14 +1,13 @@
 import type {
+  PortableTextMarkComponent,
+  PortableTextProps,
+  PortableTextTypeComponent,
+} from '@portabletext/react';
+import { PortableText as PortableTextReact } from '@portabletext/react';
+import type {
   PortableTextBlock,
   PortableTextMarkDefinition,
 } from '@portabletext/types';
-import type {
-  PortableTextProps,
-  PortableTextTypeComponent,
-  PortableTextMarkComponent,
-} from '@portabletext/react';
-
-import { PortableText as PortableTextReact } from '@portabletext/react';
 import { SetOptional } from 'type-fest';
 
 type TypedObject = SetOptional<PortableTextBlock, 'children'>;
