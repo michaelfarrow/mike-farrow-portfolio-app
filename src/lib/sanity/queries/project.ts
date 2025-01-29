@@ -37,7 +37,9 @@ export const projectQuery = defineQuery(`
         _id,
         name
       }
-    }
+    },
+    private,
+    hideFromSearchEngines
   }
 `);
 

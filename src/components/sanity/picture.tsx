@@ -45,8 +45,6 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
     })
     .filter((image) => !!image);
 
-  console.log(image.main?.caption);
-
   return (
     <Picture
       {...rest}

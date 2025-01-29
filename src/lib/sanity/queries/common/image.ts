@@ -1,4 +1,5 @@
 export const imageCommonQuery = `
+  _key,
   alt,
   caption,
   crop,
