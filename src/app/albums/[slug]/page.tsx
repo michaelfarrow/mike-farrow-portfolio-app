@@ -4,7 +4,7 @@ import { getAlbum } from '@/lib/sanity/queries/album';
 
 import { ContentImage } from '@/components/content/image';
 
-export const { page, generateMetadata } = createPage(getAlbum, {
+const album = createPage('album', getAlbum, {
   metadata: ({ name }) => ({
     title: name,
   }),
@@ -32,4 +32,5 @@ export const { page, generateMetadata } = createPage(getAlbum, {
   },
 });
 
-export default page;
+export const { generateMetadata } = album;
+export default album.page;

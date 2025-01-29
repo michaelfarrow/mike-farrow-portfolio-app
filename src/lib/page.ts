@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { pascalCase } from 'change-case';
+
 import { ReactNode } from 'react';
 
 import type { Metadata, ResolvingMetadata } from 'next';
@@ -9,8 +11,9 @@ export function createPage<
   P = T extends (params: infer X) => any ? X : unknown,
   V = T extends (params: any) => Promise<{ data?: infer X }> ? X : unknown,
 >(
+  name: string,
   query: T,
-  page: {
+  methods: {
     metadata: (data: V, parent: ResolvingMetadata) => Metadata | null;
     render: (data: V) => ReactNode | Promise<ReactNode>;
   }
@@ -22,16 +25,25 @@ export function createPage<
     return data;
   };
 
+  const generateMetadata = async (
+    { params }: Params,
+    parent: ResolvingMetadata
+  ) => {
+    const data = await getData(params);
+    if (!data) return null;
+    return methods.metadata(data, parent);
+  };
+
+  const page = async ({ params }: Params) => {
+    const data = await getData(params);
+    if (!data) notFound();
+    return await methods.render(data);
+  };
+
+  page.displayName = `${pascalCase(name)}Page`;
+
   return {
-    generateMetadata: async ({ params }: Params, parent: ResolvingMetadata) => {
-      const data = await getData(params);
-      if (!data) return null;
-      return page.metadata(data, parent);
-    },
-    page: async ({ params }: Params) => {
-      const data = await getData(params);
-      if (!data) notFound();
-      return await page.render(data);
-    },
+    generateMetadata,
+    page,
   };
 }

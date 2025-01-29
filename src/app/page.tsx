@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { createPage } from '@/lib/page';
 import { getProjects } from '@/lib/sanity/queries/project';
 
-export const { page, generateMetadata } = createPage(getProjects, {
+const projects = createPage('projects', getProjects, {
   metadata: () => ({
     title: `Projects`,
   }),
@@ -24,4 +24,5 @@ export const { page, generateMetadata } = createPage(getProjects, {
   },
 });
 
-export default page;
+export const { generateMetadata } = projects;
+export default projects.page;

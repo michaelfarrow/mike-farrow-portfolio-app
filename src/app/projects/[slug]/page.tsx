@@ -12,7 +12,7 @@ import { Array } from '@/components/sanity/array';
 import { SanityImage } from '@/components/sanity/image';
 import { PortableText } from '@/components/sanity/portable-text';
 
-export const { page, generateMetadata } = createPage(getProject, {
+const project = createPage('project', getProject, {
   metadata: ({ name, hideFromSearchEngines, private: isPrivate }) => ({
     title: name,
     robots: hideFromSearchEngines || isPrivate ? { index: false } : undefined,
@@ -85,4 +85,5 @@ export const { page, generateMetadata } = createPage(getProject, {
   },
 });
 
-export default page;
+export const { generateMetadata } = project;
+export default project.page;
