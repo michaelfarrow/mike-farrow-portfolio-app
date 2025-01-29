@@ -7,6 +7,8 @@ if (!process.env.SANITY_STUDIO_API_VERSION)
 if (!process.env.SANITY_STUDIO_API_READ_TOKEN)
   throw new Error('SANITY_STUDIO_API_READ_TOKEN not defined');
 
+export const STUDIO_BUILD_STATIC =
+  process.env.SANITY_STUDIO_BUILD_STATIC?.toLowerCase().trim() === 'true';
 export const STUDIO_PROJECT_ID = process.env.SANITY_STUDIO_PROJECT_ID;
 export const STUDIO_DATASET = process.env.SANITY_STUDIO_DATASET;
 export const STUDIO_API_VERSION = process.env.SANITY_STUDIO_API_VERSION;

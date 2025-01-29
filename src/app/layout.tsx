@@ -1,12 +1,7 @@
-import { VisualEditing } from 'next-sanity';
-
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { draftMode } from 'next/headers';
 
-import { SanityLive } from '@/lib/sanity/live';
-
-import { DisableDraftMode } from '@/components/DisableDraftMode';
+import { Live } from '@/components/live';
 
 import './globals.css';
 
@@ -34,13 +29,7 @@ export default async function RootLayout({
     <html lang='en'>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
-        <SanityLive />
-        {(await draftMode()).isEnabled && (
-          <>
-            <DisableDraftMode />
-            <VisualEditing />
-          </>
-        )}
+        <Live />
       </body>
     </html>
   );

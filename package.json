@@ -6,6 +6,7 @@
     "setup": "npm run fetch:studio",
     "dev": "concurrently --names 'studio,watch' -c 'bgGreen.bold,bgMagenta.bold' \"next dev --turbopack\" \"npm run watch\"",
     "build": "next build",
+    "build:static": "SANITY_STUDIO_BUILD_STATIC=true npm run build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit --incremental",

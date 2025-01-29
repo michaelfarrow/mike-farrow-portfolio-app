@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { getExifData } from '@/lib/image';
 import { createPage } from '@/lib/page';
-import { getProject } from '@/lib/sanity/queries/project';
+import { getProject, getProjects } from '@/lib/sanity/queries/project';
 
 import { ContentImage } from '@/components/content/image';
 import { ContentPicture } from '@/components/content/picture';
@@ -17,6 +17,13 @@ const project = createPage('project', getProject, {
     title: name,
     robots: hideFromSearchEngines || isPrivate ? { index: false } : undefined,
   }),
+  params: async () => {
+    const { data: projects } = await getProjects();
+    return projects
+      .map(({ slug }) => slug?.current)
+      .filter((slug) => slug !== undefined)
+      .map((slug) => ({ slug }));
+  },
   render: ({ name, description, attributions, thumbnail, content }) => {
     const exif = thumbnail ? getExifData(thumbnail) : null;
     const settings =
@@ -85,5 +92,5 @@ const project = createPage('project', getProject, {
   },
 });
 
-export const { generateMetadata } = project;
+export const { generateMetadata, generateStaticParams } = project;
 export default project.page;

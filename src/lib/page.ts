@@ -6,6 +6,8 @@ import { ReactNode } from 'react';
 import type { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { STUDIO_BUILD_STATIC } from '@/lib/env';
+
 export function createPage<
   T extends (params: P) => Promise<{ data?: V }>,
   P = T extends (params: infer X) => any ? X : unknown,
@@ -14,7 +16,11 @@ export function createPage<
   name: string,
   query: T,
   methods: {
-    metadata: (data: V, parent: ResolvingMetadata) => Metadata | null;
+    metadata?: (
+      data: V,
+      parent: ResolvingMetadata
+    ) => Metadata | null | Promise<Metadata | null>;
+    params?: () => P[] | Promise<P[]>;
     render: (data: V) => ReactNode | Promise<ReactNode>;
   }
 ) {
@@ -31,8 +37,14 @@ export function createPage<
   ) => {
     const data = await getData(params);
     if (!data) return null;
-    return methods.metadata(data, parent);
+    return (methods.metadata && (await methods.metadata(data, parent))) || {};
   };
+
+  const generateStaticParams = STUDIO_BUILD_STATIC
+    ? async () => {
+        return (methods.params && (await methods.params())) || [];
+      }
+    : undefined;
 
   const page = async ({ params }: Params) => {
     const data = await getData(params);
@@ -44,6 +56,7 @@ export function createPage<
 
   return {
     generateMetadata,
+    generateStaticParams,
     page,
   };
 }
