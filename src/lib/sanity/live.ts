@@ -7,4 +7,7 @@ export const { sanityFetch, SanityLive } = defineLive({
   client,
   browserToken: STUDIO_API_READ_TOKEN,
   serverToken: STUDIO_API_READ_TOKEN,
+  fetchOptions: {
+    revalidate: 60,
+  },
 });

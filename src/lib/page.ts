@@ -14,7 +14,11 @@ export function createPage<
   name: string,
   query: T,
   methods: {
-    metadata: (data: V, parent: ResolvingMetadata) => Metadata | null;
+    metadata?: (
+      data: V,
+      parent: ResolvingMetadata
+    ) => Metadata | null | Promise<Metadata | null>;
+    params?: () => P[] | Promise<P[]>;
     render: (data: V) => ReactNode | Promise<ReactNode>;
   }
 ) {
@@ -31,7 +35,11 @@ export function createPage<
   ) => {
     const data = await getData(params);
     if (!data) return null;
-    return methods.metadata(data, parent);
+    return (methods.metadata && (await methods.metadata(data, parent))) || {};
+  };
+
+  const generateStaticParams = async () => {
+    return (methods.params && (await methods.params())) || [];
   };
 
   const page = async ({ params }: Params) => {
@@ -44,6 +52,7 @@ export function createPage<
 
   return {
     generateMetadata,
+    generateStaticParams,
     page,
   };
 }

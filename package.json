@@ -14,7 +14,8 @@
     "watch": "chokidar .studio/schema.json ./src/lib/sanity/queries --silent --initial -c 'npm run generate:types'",
     "generate:types": "npx sanity@`cat .studio/version` typegen generate",
     "fetch:studio": "tsx scripts/fetch-studio-info",
-    "prettier": "prettier './**/*.{js,ts,tsx,mjs,cjs,json,yml}' --write"
+    "prettier": "prettier './**/*.{js,ts,tsx,mjs,cjs,json,yml}' --write",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@portabletext/react": "^3.2.0",
@@ -22,8 +23,8 @@
     "clsx": "^2.1.1",
     "get-youtube-id": "^1.0.1",
     "lodash": "^4.17.21",
-    "next": "^15.1.4",
-    "next-sanity": "^9.8.35",
+    "next": "^15.1.6",
+    "next-sanity": "9.8.46",
     "num2fraction": "^1.2.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -40,6 +41,7 @@
     "concurrently": "^9.1.2",
     "eslint": "^9",
     "eslint-config-next": "15.1.4",
+    "patch-package": "^8.0.0",
     "tsx": "^4.19.2",
     "type-fest": "^4.32.0",
     "typescript": "^5"
