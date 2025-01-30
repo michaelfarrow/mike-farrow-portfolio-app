@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { projectHref } from '@/lib/link';
 import { createPage } from '@/lib/page';
 import { getProjects } from '@/lib/sanity/queries/project';
 
@@ -11,13 +12,16 @@ const projects = createPage('projects', getProjects, {
     return (
       <div>
         <ul>
-          {projects.map((project) => (
-            <li key={project._id}>
-              <Link href={`/projects/${project?.slug?.current}`}>
-                {project.name}
-              </Link>
-            </li>
-          ))}
+          {projects.map((project) => {
+            if (!project.slug?.current) return null;
+            return (
+              <li key={project._id}>
+                <Link href={projectHref({ slug: project.slug.current })}>
+                  {project.name}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
     );
