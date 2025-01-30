@@ -7,27 +7,24 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export function createPage<
-  T extends (params: P) => Promise<{ data?: V }>,
+  T extends (params: P) => Promise<V>,
   P = T extends (params: infer X) => any ? X : unknown,
-  V = T extends (params: any) => Promise<{ data?: infer X }> ? X : unknown,
+  V = T extends (params: any) => Promise<infer X> ? X : unknown,
 >(
   name: string,
   query: T,
   methods: {
     metadata?: (
-      data: V,
+      data: NonNullable<V>,
       parent: ResolvingMetadata
     ) => Metadata | null | Promise<Metadata | null>;
     params?: () => P[] | Promise<P[]>;
-    render: (data: V) => ReactNode | Promise<ReactNode>;
+    render: (data: NonNullable<V>) => ReactNode | Promise<ReactNode>;
   }
 ) {
   type Params = { params: Promise<P> };
 
-  const getData = async (params: Promise<P>) => {
-    const { data } = await query(await params);
-    return data;
-  };
+  const getData = async (params: Promise<P>) => query(await params);
 
   const generateMetadata = async (
     { params }: Params,

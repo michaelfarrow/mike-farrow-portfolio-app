@@ -38,7 +38,7 @@ function nullsToUndefined<T>(
 
 export async function fetch<T extends Query>(query: T, params?: Params) {
   const res = await sanityFetch({ query, params });
-  return nullsToUndefined(res);
+  return nullsToUndefined(res.data);
 }
 
 export function createQuery<T extends Query>(query: T) {
