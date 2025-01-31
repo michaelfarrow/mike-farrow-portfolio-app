@@ -30,7 +30,7 @@ type PageData = {
   _type: string;
 };
 
-export function SortableV3<
+export function Sortable<
   T extends PageData,
   P extends KeysMatching<
     {

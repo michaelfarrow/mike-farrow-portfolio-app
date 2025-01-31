@@ -7,7 +7,7 @@ import { ContentPicture } from '@/components/content/picture';
 import { ContentVideo } from '@/components/content/video';
 import { Array } from '@/components/sanity/array';
 import { PortableText } from '@/components/sanity/portable-text';
-import { SortableV3 } from '@/components/sanity/sortable';
+import { Sortable } from '@/components/sanity/sortable';
 
 export function ProjectContent({
   project,
@@ -17,7 +17,7 @@ export function ProjectContent({
   if (!project.content) return null;
 
   return (
-    <SortableV3 document={project} path='content'>
+    <Sortable document={project} path='content'>
       {(content, props) => (
         <Array
           value={content}
@@ -40,6 +40,6 @@ export function ProjectContent({
           }}
         />
       )}
-    </SortableV3>
+    </Sortable>
   );
 }
