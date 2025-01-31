@@ -21,6 +21,8 @@ export const projectQuery = defineQuery(`
     _type == "project" &&
     slug.current == $slug
   ][0] {
+    _id,
+    _type,
     name,
     description,
     thumbnail ${imageQuery},

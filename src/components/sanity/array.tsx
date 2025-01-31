@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import React, { Fragment } from 'react';
 
 export type ArrayItem = {
@@ -13,11 +13,13 @@ export interface ArrayProps<T extends ArrayItem> {
       value: Extract<T, { _type: K }>;
     }>;
   };
+  wrapper: (item: ArrayItem, children: ReactNode) => ReactNode;
 }
 
 export function Array<T extends ArrayItem>({
   value,
   components = {},
+  wrapper = (_block, children) => children,
 }: ArrayProps<T>) {
   const _components: Record<
     string,
@@ -31,7 +33,7 @@ export function Array<T extends ArrayItem>({
         const C = _components[item._type];
         return (
           <Fragment key={item._key}>
-            {(C && <C value={item} />) || null}
+            {(C && wrapper(item, <C value={item} />)) || null}
           </Fragment>
         );
       })}

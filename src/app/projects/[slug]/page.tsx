@@ -4,20 +4,18 @@ import { getExifData } from '@/lib/image';
 import { createPage } from '@/lib/page';
 import { getProject } from '@/lib/sanity/queries/project';
 
-import { ContentImage } from '@/components/content/image';
-import { ContentPicture } from '@/components/content/picture';
-import { ContentVideo } from '@/components/content/video';
 import { Figure } from '@/components/general/figure';
-import { Array } from '@/components/sanity/array';
+import { ProjectContent } from '@/components/project/content';
 import { SanityImage } from '@/components/sanity/image';
-import { PortableText } from '@/components/sanity/portable-text';
 
 const project = createPage('project', getProject, {
   metadata: ({ name, hideFromSearchEngines, private: isPrivate }) => ({
     title: name,
     robots: hideFromSearchEngines || isPrivate ? { index: false } : undefined,
   }),
-  render: ({ name, description, attributions, thumbnail, content }) => {
+  render: (project) => {
+    const { name, description, attributions, thumbnail } = project;
+
     const exif = thumbnail ? getExifData(thumbnail) : null;
     const settings =
       exif?.settings && Object.values(exif.settings).filter((v) => !!v);
@@ -49,24 +47,7 @@ const project = createPage('project', getProject, {
             />
           </Figure>
         ) : null}
-        <div>
-          {content ? (
-            <Array
-              value={content}
-              components={{
-                richText: (block) =>
-                  block.value.content && (
-                    <PortableText value={block.value.content || null} />
-                  ),
-                responsiveImage: (block) => (
-                  <ContentPicture image={block.value} />
-                ),
-                image: (block) => <ContentImage image={block.value} />,
-                video: (block) => <ContentVideo video={block.value} />,
-              }}
-            />
-          ) : null}
-        </div>
+        <ProjectContent project={project} />
         <div>
           <h2>Attributions</h2>
           {attributions?.map((attr) => (

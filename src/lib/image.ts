@@ -4,10 +4,10 @@ import numToFraction from 'num2fraction';
 
 import type { CommonSchemaType } from '@/types/content';
 
+import { STUDIO_CONFIG } from '@/lib/env.client';
 import { romanize } from '@/lib/number';
-import { client } from '@/lib/sanity/client';
 
-const builder = imageUrlBuilder(client);
+const builder = imageUrlBuilder(STUDIO_CONFIG);
 
 type UnknownImageData = {
   [key: string]: number | string | undefined;
