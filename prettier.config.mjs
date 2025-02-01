@@ -5,7 +5,7 @@ const config = {
     '^react$',
     '^next(/.*)?$',
     '^@/types/(.*)$',
-    '^@/(lib|hooks)/(.*)$',
+    '^@/(lib|hooks|context)/(.*)$',
     '^@/components/(.*)$',
     '^@/(.*)$',
     '^[./]',

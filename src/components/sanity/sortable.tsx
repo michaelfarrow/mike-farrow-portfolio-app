@@ -8,9 +8,10 @@ import { ReactNode } from 'react';
 
 import { KeysMatching } from '@/types/utils';
 
+import { DisableStega } from '@/context/stega';
 import { get } from '@/lib/object';
 
-const contentItemKeys = ['_key', '_type'] as const;
+const contentItemKeys = ['_key'] as const; // , '_type'
 type ContentItemKeys = (typeof contentItemKeys)[number];
 
 type ContentItem = {
@@ -60,7 +61,7 @@ export function Sortable<
     return Array.isArray(content) &&
       content
         .map((item) => (isContentItem<C>(item) ? item : null))
-        .filter((item) => item !== null).length === content.length
+        .filter((item) => item !== null).length
       ? content
       : [];
   };
@@ -85,23 +86,25 @@ export function Sortable<
   }
 
   return (
-    <div
-      data-sanity={createDataAttribute({
-        id: documentId,
-        type: documentType,
-        path,
-      }).toString()}
-    >
-      {children(content, (section: ContentItem) => {
-        return {
-          key: section._key,
-          'data-sanity': createDataAttribute({
-            id: documentId,
-            type: documentType,
-            path: `${path}[_key=="${section._key}"]`,
-          }).toString(),
-        };
-      })}
-    </div>
+    <DisableStega>
+      <div
+        data-sanity={createDataAttribute({
+          id: documentId,
+          type: documentType,
+          path,
+        }).toString()}
+      >
+        {children(content, (section: ContentItem) => {
+          return {
+            key: section._key,
+            'data-sanity': createDataAttribute({
+              id: documentId,
+              type: documentType,
+              path: `${path}[_key=="${section._key}"]`,
+            }).toString(),
+          };
+        })}
+      </div>
+    </DisableStega>
   );
 }

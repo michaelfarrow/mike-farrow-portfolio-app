@@ -10,6 +10,8 @@ import type {
 } from '@portabletext/types';
 import { SetOptional } from 'type-fest';
 
+import { useStegaValue } from '@/lib/stega';
+
 type TypedObject = SetOptional<PortableTextBlock, 'children'>;
 
 export function PortableText<
@@ -36,5 +38,7 @@ export function PortableText<
     };
   };
 }) {
-  return <PortableTextReact value={value} components={components} />;
+  return (
+    <PortableTextReact value={useStegaValue(value)} components={components} />
+  );
 }

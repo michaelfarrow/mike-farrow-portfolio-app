@@ -5,6 +5,7 @@ import { createPage } from '@/lib/page';
 import { getProject } from '@/lib/sanity/queries/project';
 
 import { Figure } from '@/components/general/figure';
+import { ProjectAttributions } from '@/components/project/attributions';
 import { ProjectContent } from '@/components/project/content';
 import { SanityImage } from '@/components/sanity/image';
 
@@ -14,7 +15,7 @@ const project = createPage('project', getProject, {
     robots: hideFromSearchEngines || isPrivate ? { index: false } : undefined,
   }),
   render: (project) => {
-    const { name, description, attributions, thumbnail } = project;
+    const { name, description, thumbnail } = project;
 
     const exif = thumbnail ? getExifData(thumbnail) : null;
     const settings =
@@ -48,19 +49,7 @@ const project = createPage('project', getProject, {
           </Figure>
         ) : null}
         <ProjectContent project={project} />
-        <div>
-          <h2>Attributions</h2>
-          {attributions?.map((attr) => (
-            <div key={attr._key}>
-              <h3>{attr.name}</h3>
-              <ul>
-                {attr.contacts?.map((contact) => (
-                  <li key={contact._id}>{contact.name}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <ProjectAttributions project={project} />
       </div>
     );
   },

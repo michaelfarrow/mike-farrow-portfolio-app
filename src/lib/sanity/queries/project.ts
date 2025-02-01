@@ -1,5 +1,6 @@
 import { defineQuery } from 'groq';
 
+import { arrayCommonQuery } from '@/lib/sanity/queries/array';
 import {
   imageQuery,
   responsiveImageQuery,
@@ -27,10 +28,13 @@ export const projectQuery = defineQuery(`
     description,
     thumbnail ${imageQuery},
     content[] {
-      ...,
+      ${arrayCommonQuery},
       _type == "image" => ${imageQuery},
       _type == "responsiveImage" => ${responsiveImageQuery},
-      _type == "video" => ${videoQuery}
+      _type == "video" => ${videoQuery},
+      _type == "richText" => {
+        ...
+      }
     },
     attributions[] {
       _key,

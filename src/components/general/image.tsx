@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { default as NextImage, ImageProps as NextImageProps } from 'next/image';
 
 import { useTimeout } from '@/hooks/timeout';
+import { useStegaValue } from '@/lib/stega';
 
 import styles from './image.module.css';
 
@@ -18,6 +19,7 @@ export interface ImageProps extends NextImageProps {
 
 export function Image({
   className,
+  alt,
   onImageLoaded,
   quality,
   ...rest
@@ -44,6 +46,7 @@ export function Image({
   return (
     <NextImage
       {...rest}
+      alt={useStegaValue(alt)}
       quality={quality || IMAGE_DEFAULT_QUALITY}
       className={clsx(styles.image, loaded && styles.loaded, className)}
       ref={image}
