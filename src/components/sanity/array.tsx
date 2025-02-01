@@ -30,7 +30,7 @@ export function Array<T extends ArrayItem>({
     <>
       {value.map((item) => {
         const component = _components[item._type];
-        const rendered = component && component({ value: item });
+        const rendered = component && component(item);
         return rendered ? (
           <Fragment key={item._key}>{wrapper(item, rendered)}</Fragment>
         ) : null;
