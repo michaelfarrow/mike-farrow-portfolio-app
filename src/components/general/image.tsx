@@ -6,8 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { default as NextImage, ImageProps as NextImageProps } from 'next/image';
 
+import { useStegaValue } from '@/hooks/stega';
 import { useTimeout } from '@/hooks/timeout';
-import { useStegaValue } from '@/lib/stega';
 
 import styles from './image.module.css';
 

@@ -1,4 +1,4 @@
-import { useStegaValue } from '@/lib/stega';
+import { useStegaValue } from '@/hooks/stega';
 
 import { Figure } from '@/components/general/figure';
 

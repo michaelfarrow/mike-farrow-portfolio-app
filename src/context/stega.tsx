@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext } from 'react';
+import { ReactNode, createContext } from 'react';
 
 type StegaContextType = boolean;
 
@@ -10,4 +10,14 @@ export function DisableStega({ children }: { children: ReactNode }) {
   );
 }
 
-export const useStega = () => useContext(StegaContext);
+export function Stega({
+  children,
+  enabled = true,
+}: {
+  children: ReactNode;
+  enabled?: boolean;
+}) {
+  return (
+    <StegaContext.Provider value={enabled}>{children}</StegaContext.Provider>
+  );
+}

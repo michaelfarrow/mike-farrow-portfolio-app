@@ -8,7 +8,8 @@ import { ReactNode } from 'react';
 
 import { KeysMatching } from '@/types/utils';
 
-import { DisableStega } from '@/context/stega';
+import { Stega } from '@/context/stega';
+import { useIsStudioEmbed } from '@/hooks/sanity';
 import { get } from '@/lib/object';
 
 const contentItemKeys = ['_key'] as const; // , '_type'
@@ -51,9 +52,14 @@ export function Sortable<
   path: P;
   children: (
     content: NonNullable<C[]>,
-    props: (item: ContentItem) => { key: string; 'data-sanity': string }
+    props: (item: ContentItem) => {
+      key: string;
+      'data-sanity': string | undefined;
+    }
   ) => ReactNode;
 }) {
+  const isStudioEmbed = useIsStudioEmbed();
+
   const { _id: documentId, _type: documentType } = document;
 
   const getContent = (document: T): C[] => {
@@ -86,25 +92,31 @@ export function Sortable<
   }
 
   return (
-    <DisableStega>
+    <Stega enabled={!isStudioEmbed}>
       <div
-        data-sanity={createDataAttribute({
-          id: documentId,
-          type: documentType,
-          path,
-        }).toString()}
+        data-sanity={
+          isStudioEmbed
+            ? createDataAttribute({
+                id: documentId,
+                type: documentType,
+                path,
+              }).toString()
+            : undefined
+        }
       >
         {children(content, (section: ContentItem) => {
           return {
             key: section._key,
-            'data-sanity': createDataAttribute({
-              id: documentId,
-              type: documentType,
-              path: `${path}[_key=="${section._key}"]`,
-            }).toString(),
+            'data-sanity': isStudioEmbed
+              ? createDataAttribute({
+                  id: documentId,
+                  type: documentType,
+                  path: `${path}[_key=="${section._key}"]`,
+                }).toString()
+              : undefined,
           };
         })}
       </div>
-    </DisableStega>
+    </Stega>
   );
 }

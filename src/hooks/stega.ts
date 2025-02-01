@@ -1,7 +1,13 @@
 import { mapValues } from 'lodash';
 import { stegaClean } from 'next-sanity';
 
-import { useStega } from '@/context/stega';
+import { useContext } from 'react';
+
+import { StegaContext } from '@/context/stega';
+
+export function useStega() {
+  return useContext(StegaContext);
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const processObject = (o?: any): any => {

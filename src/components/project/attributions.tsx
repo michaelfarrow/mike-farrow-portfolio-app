@@ -1,7 +1,7 @@
 'use client';
 
+import { useStegaValue } from '@/hooks/stega';
 import type { getProject } from '@/lib//sanity/queries/project';
-import { useStegaValue } from '@/lib/stega';
 
 import { Sortable } from '@/components/sanity/sortable';
 

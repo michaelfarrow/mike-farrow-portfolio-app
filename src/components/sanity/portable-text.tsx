@@ -10,7 +10,7 @@ import type {
 } from '@portabletext/types';
 import { SetOptional } from 'type-fest';
 
-import { useStegaValue } from '@/lib/stega';
+import { useStegaValue } from '@/hooks/stega';
 
 type TypedObject = SetOptional<PortableTextBlock, 'children'>;
 
