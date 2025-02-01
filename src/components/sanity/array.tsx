@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from 'react';
+import type { FunctionComponent, ReactNode } from 'react';
 import React, { Fragment } from 'react';
 
 export type ArrayItem = {
@@ -9,7 +9,7 @@ export type ArrayItem = {
 export interface ArrayProps<T extends ArrayItem> {
   value: T[];
   components?: {
-    [K in T['_type']]?: ComponentType<{
+    [K in T['_type']]?: FunctionComponent<{
       value: Extract<T, { _type: K }>;
     }>;
   };
@@ -24,18 +24,17 @@ export function Array<T extends ArrayItem>({
   const _components: Record<
     string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ComponentType<{ value: any }> | undefined
+    FunctionComponent<{ value: any }> | undefined
   > = components;
 
   return (
     <>
       {value.map((item) => {
-        const C = _components[item._type];
-        return (
-          <Fragment key={item._key}>
-            {(C && wrapper(item, <C value={item} />)) || null}
-          </Fragment>
-        );
+        const component = _components[item._type];
+        const rendered = component && component({ value: item });
+        return rendered ? (
+          <Fragment key={item._key}>{wrapper(item, rendered)}</Fragment>
+        ) : null;
       })}
     </>
   );
