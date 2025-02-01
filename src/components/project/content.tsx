@@ -31,12 +31,10 @@ export function ProjectContent({
           }}
           components={{
             richText: (block) =>
-              block.value.content && (
-                <PortableText value={block.value.content || null} />
-              ),
-            responsiveImage: (block) => <ContentPicture image={block.value} />,
-            image: (block) => <ContentImage image={block.value} />,
-            video: (block) => <ContentVideo video={block.value} />,
+              block.content && <PortableText value={block.content || null} />,
+            responsiveImage: (block) => <ContentPicture image={block} />,
+            image: (block) => <ContentImage image={block} />,
+            video: (block) => <ContentVideo video={block} />,
           }}
         />
       )}
