@@ -1,3 +1,4 @@
+import { stegaClean } from 'next-sanity';
 import { imageLoader } from 'next-sanity/image';
 
 import type { CommonSchemaType } from '@/types/content';
@@ -35,7 +36,7 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
         return (
           (props && {
             ...props,
-            max: breakpoint && BREAKPOINTS[breakpoint],
+            max: breakpoint && BREAKPOINTS[stegaClean(breakpoint)],
           }) ||
           null
         );
@@ -44,6 +45,8 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
       return null;
     })
     .filter((image) => !!image);
+
+  console.log(images);
 
   return (
     <Picture
