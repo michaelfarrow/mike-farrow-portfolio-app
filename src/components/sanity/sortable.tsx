@@ -9,7 +9,7 @@ import { ReactNode } from 'react';
 
 import { useIsStudioEmbed } from '@/hooks/sanity';
 
-import { Stega } from '@/context/stega';
+import { DisableStega } from '@/context/stega';
 
 type ContentItem = {
   _key: string;
@@ -159,7 +159,6 @@ export function Sortable<
   getContent: FetchContent;
   children: SortableChildren<T, P, C>;
 }) {
-  const isStudioEmbed = useIsStudioEmbed();
   const initialContent = getContent(document);
 
   const content = useOptimistic<C[], SanityDocument<T>>(
@@ -178,10 +177,10 @@ export function Sortable<
   }
 
   return (
-    <Stega enabled={!isStudioEmbed}>
+    <DisableStega>
       <SortableContent document={document} content={content} path={path}>
         {children}
       </SortableContent>
-    </Stega>
+    </DisableStega>
   );
 }
