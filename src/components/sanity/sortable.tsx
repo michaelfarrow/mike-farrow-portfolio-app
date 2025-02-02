@@ -1,5 +1,6 @@
 'use client';
 
+import { mapValues } from 'lodash';
 import { SanityDocument, createDataAttribute } from 'next-sanity';
 import { useOptimistic } from 'next-sanity/hooks';
 import { LiteralUnion, Paths } from 'type-fest';
@@ -112,6 +113,32 @@ export function SortableContent<
   );
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function restoreRefs(o: any, existing: any) {
+  if (o === undefined || existing === undefined) {
+    return undefined;
+  }
+
+  if (Array.isArray(o))
+    return o.map((val, i): any =>
+      restoreRefs(
+        val,
+        (val && val._key && existing.find((s) => s?._key === val?._key)) ||
+          existing?.[i]
+      )
+    );
+
+  if (typeof o === 'object') {
+    if (o._type === 'reference') {
+      return existing;
+    }
+    return mapValues(o, (val, key): any => restoreRefs(val, existing?.[key]));
+  }
+
+  return o;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 export function Sortable<
   T extends PageData,
   P extends LiteralUnion<Paths<T>, string>,
@@ -138,16 +165,9 @@ export function Sortable<
   const content = useOptimistic<C[], SanityDocument<T>>(
     initialContent || [],
     (content, action) => {
-      console.log(action);
       const newContent = getContent(action.document);
       if (action.id === document._id && newContent) {
-        console.log('here');
-        return newContent;
-        // TODO: Restore refs properly
-        // TODO: support primative arrays
-        // return newContent.map(
-        //   (item) => content?.find((s) => s._key === item?._key) ?? item
-        // );
+        return restoreRefs(newContent, content);
       }
       return content;
     }
