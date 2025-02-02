@@ -1,5 +1,7 @@
 'use client';
 
+import { stegaClean } from 'next-sanity';
+
 import type { getProject } from '@/lib//sanity/queries/project';
 
 import { ContentImage } from '@/components/content/image';
@@ -17,8 +19,12 @@ export function ProjectContent({
   if (!project.content) return null;
 
   return (
-    <Sortable document={project} path='content'>
-      {(content, props) => (
+    <Sortable
+      document={project}
+      path='content'
+      getContent={(project) => project.content}
+    >
+      {({ content, props, SortableChild }) => (
         <Array
           value={content}
           wrapper={(block, children) => {
@@ -35,6 +41,25 @@ export function ProjectContent({
             responsiveImage: (block) => <ContentPicture image={block} />,
             image: (block) => <ContentImage image={block} />,
             video: (block) => <ContentVideo video={block} />,
+            temp: (block) => (
+              <div>
+                {(block.names && (
+                  <SortableChild of={block} path='names' content={block.names}>
+                    {({ content, props }) =>
+                      content.map((name) => {
+                        const { key, ...rest } = props(name);
+                        return (
+                          <div key={key} {...rest}>
+                            {JSON.stringify(stegaClean(name.name))}
+                          </div>
+                        );
+                      })
+                    }
+                  </SortableChild>
+                )) ||
+                  null}
+              </div>
+            ),
           }}
         />
       )}

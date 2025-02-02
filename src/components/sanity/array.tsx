@@ -13,7 +13,7 @@ export interface ArrayProps<T extends ArrayItem> {
   components?: {
     [K in T['_type']]?: ComponentRenderer<Extract<T, { _type: K }>>;
   };
-  wrapper: (item: ArrayItem, children: ReactNode) => ReactNode;
+  wrapper: (item: T, children: ReactNode) => ReactNode;
 }
 
 export function Array<T extends ArrayItem>({

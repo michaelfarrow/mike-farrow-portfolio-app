@@ -2,86 +2,152 @@
 
 import { SanityDocument, createDataAttribute } from 'next-sanity';
 import { useOptimistic } from 'next-sanity/hooks';
-import { Get, Paths } from 'type-fest';
+import { LiteralUnion, Paths } from 'type-fest';
 
 import { ReactNode } from 'react';
 
-import { KeysMatching } from '@/types/utils';
+import { useIsStudioEmbed } from '@/hooks/sanity';
 
 import { Stega } from '@/context/stega';
-import { useIsStudioEmbed } from '@/hooks/sanity';
-import { get } from '@/lib/object';
-
-const contentItemKeys = ['_key'] as const; // , '_type'
-type ContentItemKeys = (typeof contentItemKeys)[number];
 
 type ContentItem = {
-  [key in ContentItemKeys]: string;
+  _key: string;
 };
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isContentItem<C extends ContentItem>(o: any): o is C {
-  return (
-    typeof o === 'object' &&
-    contentItemKeys.filter((key) => !(key in o)).length === 0
-  );
-}
 
 type PageData = {
   _id: string;
   _type: string;
 };
 
-export function Sortable<
+export type SortableChildren<
   T extends PageData,
-  P extends KeysMatching<
-    {
-      [K in Paths<T>]: NonNullable<Get<T, K>>;
-    },
-    ContentItem[]
-  >,
-  C extends NonNullable<Get<T, P>> extends (infer X extends ContentItem)[]
-    ? X
-    : ContentItem,
+  P extends LiteralUnion<Paths<T>, string>,
+  C extends ContentItem,
+> = (data: {
+  content: C[];
+  props: (item: C) => {
+    key: string;
+    'data-sanity': string | undefined;
+  };
+  SortableChild: ReturnType<typeof createSortableChild<T, P>>;
+}) => ReactNode;
+
+function createSortableChild<
+  T extends PageData,
+  P extends LiteralUnion<Paths<T>, string>,
+>(document: T, path: P) {
+  function SortableChild<C extends ContentItem>({
+    of,
+    path: childPath,
+    content,
+    children,
+  }: {
+    of: ContentItem;
+    path: string;
+    content: C[] | undefined;
+    children: SortableChildren<T, P, C>;
+  }) {
+    if (!content) return null;
+    return (
+      <SortableContent
+        document={document}
+        path={`${path}:${of._key}.${childPath}`}
+        content={content}
+      >
+        {children}
+      </SortableContent>
+    );
+  }
+  return SortableChild;
+}
+
+export function SortableContent<
+  T extends PageData,
+  P extends LiteralUnion<Paths<T>, string>,
+  C extends ContentItem,
 >({
   document,
+  content,
   path,
   children,
 }: {
   document: T;
   path: P;
-  children: (
-    content: NonNullable<C[]>,
-    props: (item: ContentItem) => {
-      key: string;
-      'data-sanity': string | undefined;
-    }
-  ) => ReactNode;
+  content: C[];
+  children: SortableChildren<T, P, C>;
 }) {
   const isStudioEmbed = useIsStudioEmbed();
 
-  const { _id: documentId, _type: documentType } = document;
+  const { _id: id, _type: type } = document;
 
-  const getContent = (document: T): C[] => {
-    const content = get(document, path);
-    return Array.isArray(content) &&
-      content
-        .map((item) => (isContentItem<C>(item) ? item : null))
-        .filter((item) => item !== null).length
-      ? content
-      : [];
-  };
+  return (
+    <div
+      data-sanity={
+        isStudioEmbed
+          ? createDataAttribute({
+              id,
+              type,
+              path,
+            }).toString()
+          : undefined
+      }
+    >
+      {children({
+        content,
+        props: (item) => {
+          return {
+            key: item._key,
+            'data-sanity': isStudioEmbed
+              ? createDataAttribute({
+                  id,
+                  type,
+                  path: `${path}:${item._key}`,
+                }).toString()
+              : undefined,
+          };
+        },
+        SortableChild: createSortableChild(document, path),
+      })}
+    </div>
+  );
+}
 
+export function Sortable<
+  T extends PageData,
+  P extends LiteralUnion<Paths<T>, string>,
+  FetchContent extends (document: T) => C[] | undefined,
+  C extends ContentItem = FetchContent extends (
+    document: T
+  ) => (infer X extends ContentItem)[] | undefined
+    ? X
+    : ContentItem,
+>({
+  document,
+  path,
+  getContent,
+  children,
+}: {
+  document: T;
+  path: P;
+  getContent: FetchContent;
+  children: SortableChildren<T, P, C>;
+}) {
+  const isStudioEmbed = useIsStudioEmbed();
   const initialContent = getContent(document);
 
   const content = useOptimistic<C[], SanityDocument<T>>(
-    initialContent,
+    initialContent || [],
     (content, action) => {
+      console.log(action);
       const newContent = getContent(action.document);
-      if (action.id === documentId && newContent) {
-        return newContent.map(
-          (item) => content?.find((s) => s._key === item?._key) ?? item
-        );
+      if (action.id === document._id && newContent) {
+        console.log('here');
+        return newContent;
+        // TODO: Restore refs properly
+        // TODO: support primative arrays
+        // return newContent.map(
+        //   (item) => content?.find((s) => s._key === item?._key) ?? item
+        // );
       }
       return content;
     }
@@ -93,30 +159,9 @@ export function Sortable<
 
   return (
     <Stega enabled={!isStudioEmbed}>
-      <div
-        data-sanity={
-          isStudioEmbed
-            ? createDataAttribute({
-                id: documentId,
-                type: documentType,
-                path,
-              }).toString()
-            : undefined
-        }
-      >
-        {children(content, (section: ContentItem) => {
-          return {
-            key: section._key,
-            'data-sanity': isStudioEmbed
-              ? createDataAttribute({
-                  id: documentId,
-                  type: documentType,
-                  path: `${path}[_key=="${section._key}"]`,
-                }).toString()
-              : undefined,
-          };
-        })}
-      </div>
+      <SortableContent document={document} content={content} path={path}>
+        {children}
+      </SortableContent>
     </Stega>
   );
 }
