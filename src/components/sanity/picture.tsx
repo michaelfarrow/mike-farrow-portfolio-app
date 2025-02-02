@@ -46,8 +46,6 @@ export function SanityPicture({ image, alt, ...rest }: SanityPictureProps) {
     })
     .filter((image) => !!image);
 
-  console.log(images);
-
   return (
     <Picture
       {...rest}
