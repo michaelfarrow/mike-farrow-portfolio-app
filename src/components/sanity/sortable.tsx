@@ -15,6 +15,7 @@ import { get } from '@/lib/object';
 const contentItemKeys = ['_key'] as const; // , '_type'
 type ContentItemKeys = (typeof contentItemKeys)[number];
 
+createDataAttribute({});
 type ContentItem = {
   [key in ContentItemKeys]: string;
 };
@@ -117,6 +118,168 @@ export function Sortable<
           };
         })}
       </div>
+    </Stega>
+  );
+}
+
+export function SortableV2Content<T extends PageData>({
+  document,
+  content,
+  path,
+  children,
+}: {
+  document: T;
+  content: ContentItem[];
+  path: string;
+  children: (
+    content: NonNullable<ContentItem[]>,
+    props: (item: ContentItem) => {
+      key: string;
+      'data-sanity': string | undefined;
+    }
+  ) => ReactNode;
+}) {
+  const isStudioEmbed = useIsStudioEmbed();
+
+  const { _id: documentId, _type: documentType } = document;
+
+  return (
+    <div
+      data-sanity={
+        isStudioEmbed
+          ? createDataAttribute({
+              id: documentId,
+              type: documentType,
+              path,
+            }).toString()
+          : undefined
+      }
+    >
+      {children(content, (section: ContentItem) => {
+        return {
+          key: section._key,
+          'data-sanity': isStudioEmbed
+            ? createDataAttribute({
+                id: documentId,
+                type: documentType,
+                path: `${path}[_key=="${section._key}"]`,
+              }).toString()
+            : undefined,
+        };
+      })}
+    </div>
+  );
+}
+
+export function SortableV2<
+  T extends PageData,
+  P extends
+    | KeysMatching<
+        {
+          [K in Paths<T>]: NonNullable<Get<T, K>>;
+        },
+        ContentItem[]
+      >
+    | string,
+  G extends (document: T) => ContentItem[] | undefined,
+  C extends NonNullable<Get<T, P>> extends (infer X extends ContentItem)[]
+    ? X
+    : ContentItem,
+>({
+  document,
+  path,
+  getContent,
+  children,
+  child,
+}: {
+  document: T;
+  getContent: G;
+  path: P;
+  children: (
+    content: NonNullable<C[]>,
+    props: (item: ContentItem) => {
+      key: string;
+      'data-sanity': string | undefined;
+    }
+  ) => ReactNode;
+  child?: boolean;
+}) {
+  const isStudioEmbed = useIsStudioEmbed();
+
+  const { _id: documentId, _type: documentType } = document;
+
+  // const _getContent = (document: T): C[] => {
+  //   return getContent(doc)
+
+  //   // if(getContent) return getContent(document)
+
+  //   // if (!path && !getContent) return [];
+
+  //   // const content = get(document, path as any);
+  //   // return Array.isArray(content) &&
+  //   //   content
+  //   //     .map((item) => (isContentItem<C>(item) ? item : null))
+  //   //     .filter((item) => item !== null).length
+  //   //   ? content
+  //   //   : [];
+  // };
+
+  // const restoreRefs = (o) {
+  //   if(Array)
+  // }
+
+  const initialContent = getContent(document);
+
+  const content = useOptimistic<C[], SanityDocument<T>>(
+    initialContent,
+    (content, action) => {
+      console.log(action);
+      const newContent = getContent(action.document);
+      if (action.id === documentId && newContent) {
+        return newContent;
+        // TODO: Restore refs properly
+        // TODO: support primative arrays
+        return newContent.map(
+          (item) => content?.find((s) => s._key === item?._key) ?? item
+        );
+      }
+      return content;
+    }
+  );
+
+  if ((child && !initialContent?.length) || !content?.length) {
+    return null;
+  }
+
+  return (
+    <Stega enabled={!isStudioEmbed}>
+      <SortableV2Content document={document} content={content} path={path}>
+        {children}
+      </SortableV2Content>
+      {/* <div
+        data-sanity={
+          isStudioEmbed
+            ? createDataAttribute({
+                id: documentId,
+                type: documentType,
+                path,
+              }).toString()
+            : undefined
+        }
+      >
+        {children(content, (section: ContentItem) => {
+          return {
+            key: section._key,
+            'data-sanity': isStudioEmbed
+              ? createDataAttribute({
+                  id: documentId,
+                  type: documentType,
+                  path: `${path}[_key=="${section._key}"]`,
+                }).toString()
+              : undefined,
+          };
+        })}
+      </div> */}
     </Stega>
   );
 }

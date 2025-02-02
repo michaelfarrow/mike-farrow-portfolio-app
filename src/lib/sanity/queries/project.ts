@@ -34,14 +34,22 @@ export const projectQuery = defineQuery(`
       _type == "video" => ${videoQuery},
       _type == "richText" => {
         ...
-      }
+      },
+      _type == "temp" => {
+        names[] {
+          ...
+        }
+      },
     },
     attributions[] {
       _key,
       name,
-      contacts[] -> {
-        _id,
-        name
+      contacts[]{
+        _key,
+        ...(@->{
+          _id,
+          name
+        })
       }
     },
     private,
