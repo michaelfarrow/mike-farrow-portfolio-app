@@ -45,16 +45,22 @@ export function ProjectContent({
               <div>
                 {(block.names && (
                   <SortableChild of={block} path='names' content={block.names}>
-                    {({ content, props }) =>
-                      content.map((name) => {
-                        const { key, ...rest } = props(name);
-                        return (
-                          <div key={key} {...rest}>
-                            {JSON.stringify(stegaClean(name.name))}
-                          </div>
-                        );
-                      })
-                    }
+                    {({ content, props }) => (
+                      <div style={{ display: 'flex' }}>
+                        {content.map((name) => {
+                          const { key, ...rest } = props(name);
+                          return (
+                            <div
+                              style={{ flex: 1, padding: 30 }}
+                              key={key}
+                              {...rest}
+                            >
+                              {JSON.stringify(stegaClean(name.name))}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </SortableChild>
                 )) ||
                   null}
