@@ -1,6 +1,6 @@
 'use client';
 
-import { mapValues } from 'lodash';
+import { isEqual, mapValues } from 'lodash';
 import { SanityDocument, createDataAttribute } from 'next-sanity';
 import { useOptimistic } from 'next-sanity/hooks';
 import { LiteralUnion, Paths } from 'type-fest';
@@ -62,6 +62,9 @@ function createSortableChild<
   }
   return SortableChild;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SortableChild = ReturnType<typeof createSortableChild<any, any>>;
 
 export function SortableContent<
   T extends PageData,
@@ -143,6 +146,10 @@ function restoreRefs(o: any, existing: any) {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
+function getKeys(content: (ContentItem | undefined)[] | undefined) {
+  return (content || []).map((item) => item?._key).sort();
+}
+
 export function Sortable<
   T extends PageData,
   P extends LiteralUnion<Paths<T>, string>,
@@ -171,8 +178,23 @@ export function Sortable<
     initialContent || [],
     (content, action) => {
       const newContent = getContent(action.document);
-      if (action.id === document._id && newContent) {
-        return restoreRefs(newContent, content);
+      if (
+        action.id === document._id &&
+        newContent &&
+        isEqual(getKeys(content), getKeys(newContent))
+      ) {
+        console.log('mutation', path, action, getContent);
+
+        try {
+          const restored = restoreRefs(newContent, content);
+          console.log('mutation', newContent, content, restored);
+          return restored;
+        } catch (e) {
+          console.error(e);
+          return content;
+        }
+      } else {
+        console.log('mutation JERE');
       }
       return content;
     }
