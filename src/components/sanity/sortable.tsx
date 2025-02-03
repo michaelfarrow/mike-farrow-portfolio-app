@@ -7,9 +7,8 @@ import { LiteralUnion, Paths } from 'type-fest';
 
 import { ReactNode } from 'react';
 
-import { useIsStudioEmbed } from '@/hooks/sanity';
-
 import { DisableStega } from '@/context/stega';
+import { useIsStudioEmbed } from '@/hooks/sanity';
 
 type ContentItem = {
   _key: string;
@@ -123,7 +122,7 @@ function restoreRefs(o: any, existing: any) {
     return o.map((val, i): any =>
       restoreRefs(
         val,
-        (val && val._key && existing.find((s) => s?._key === val?._key)) ||
+        (val && val._key && existing.find((s: any) => s?._key === val?._key)) ||
           existing?.[i]
       )
     );

@@ -55,7 +55,7 @@ export function ProjectContent({
                               key={key}
                               {...rest}
                             >
-                              {JSON.stringify(stegaClean(name.name))}
+                              {stegaClean(name.name)}
                             </div>
                           );
                         })}
