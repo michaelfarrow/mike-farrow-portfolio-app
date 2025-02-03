@@ -28,6 +28,7 @@ export type SortableChildren<
   props: (item: C) => {
     key: string;
     'data-sanity': string | undefined;
+    [key: `data-sanity-${string}`]: string | undefined;
   };
   SortableChild: ReturnType<typeof createSortableChild<T, P>>;
 }) => ReactNode;
@@ -35,7 +36,7 @@ export type SortableChildren<
 function createSortableChild<
   T extends PageData,
   P extends LiteralUnion<Paths<T>, string>,
->(document: T, path: P) {
+>({ document, path, group }: { document: T; path: P; group?: string }) {
   function SortableChild<C extends ContentItem>({
     of,
     path: childPath,
@@ -53,6 +54,7 @@ function createSortableChild<
         document={document}
         path={`${path}:${of._key}.${childPath}`}
         content={content}
+        group={group}
       >
         {children}
       </SortableContent>
@@ -70,11 +72,13 @@ export function SortableContent<
   content,
   path,
   children,
+  group,
 }: {
   document: T;
   path: P;
   content: C[];
   children: SortableChildren<T, P, C>;
+  group?: string;
 }) {
   const isStudioEmbed = useIsStudioEmbed();
 
@@ -97,6 +101,7 @@ export function SortableContent<
         props: (item) => {
           return {
             key: item._key,
+            'data-sanity-drag-group': group,
             'data-sanity': isStudioEmbed
               ? createDataAttribute({
                   id,
@@ -106,7 +111,7 @@ export function SortableContent<
               : undefined,
           };
         },
-        SortableChild: createSortableChild(document, path),
+        SortableChild: createSortableChild({ document, path, group }),
       })}
     </div>
   );
@@ -152,11 +157,13 @@ export function Sortable<
   path,
   getContent,
   children,
+  group,
 }: {
   document: T;
   path: P;
   getContent: FetchContent;
   children: SortableChildren<T, P, C>;
+  group?: string;
 }) {
   const initialContent = getContent(document);
 
@@ -177,7 +184,12 @@ export function Sortable<
 
   return (
     <DisableStega>
-      <SortableContent document={document} content={content} path={path}>
+      <SortableContent
+        group={group}
+        document={document}
+        content={content}
+        path={path}
+      >
         {children}
       </SortableContent>
     </DisableStega>
