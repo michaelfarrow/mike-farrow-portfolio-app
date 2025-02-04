@@ -1,6 +1,6 @@
 'use client';
 
-import { isEqual, mapValues } from 'lodash';
+import { /* isEqual,*/ mapValues } from 'lodash';
 import { SanityDocument, createDataAttribute } from 'next-sanity';
 import { useOptimistic } from 'next-sanity/hooks';
 import { LiteralUnion, Paths } from 'type-fest';
@@ -122,10 +122,6 @@ export function SortableContent<
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function restoreRefs(o: any, existing: any) {
-  if (o === undefined || existing === undefined) {
-    return undefined;
-  }
-
   if (Array.isArray(o))
     return o.map((val, i): any =>
       restoreRefs(
@@ -144,11 +140,11 @@ function restoreRefs(o: any, existing: any) {
 
   return o;
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
-function getKeys(content: (ContentItem | undefined)[] | undefined) {
-  return (content || []).map((item) => item?._key).sort();
-}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+// function getKeys(content: (ContentItem | undefined)[] | undefined) {
+//   return (content || []).map((item) => item?._key).sort();
+// }
 
 export function Sortable<
   T extends PageData,
@@ -180,8 +176,8 @@ export function Sortable<
       const newContent = getContent(action.document);
       if (
         action.id === document._id &&
-        newContent &&
-        isEqual(getKeys(content), getKeys(newContent))
+        newContent /* &&
+        isEqual(getKeys(content), getKeys(newContent)) */
       ) {
         console.log('mutation', path, action, getContent);
 

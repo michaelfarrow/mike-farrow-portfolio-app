@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit --incremental",
+    "check": "npm run type-check && npm run lint",
     "predev": "npm run setup",
     "prebuild": "npm run setup && npm run generate:types",
     "watch": "chokidar .studio/schema.json ./src/lib/sanity/queries --silent --initial -c 'npm run generate:types'",
@@ -24,7 +25,7 @@
     "get-youtube-id": "^1.0.1",
     "lodash": "^4.17.21",
     "next": "^15.1.6",
-    "next-sanity": "9.8.46",
+    "next-sanity": "9.8.47",
     "num2fraction": "^1.2.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

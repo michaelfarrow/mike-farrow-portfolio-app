@@ -2,67 +2,79 @@
 
 import { stegaClean } from 'next-sanity';
 
+import { useStegaValue } from '@/hooks/stega';
 // import { useStegaValue } from '@/hooks/stega';
 import type { getProject } from '@/lib//sanity/queries/project';
+import { memo } from '@/lib/react';
 
-import { Sortable } from '@/components/sanity/sortable';
+import { Sortable, SortableChild } from '@/components/sanity/sortable';
 
 type Project = NonNullable<Awaited<ReturnType<typeof getProject>>>;
-// type Attribution = NonNullable<Project['attributions']>[number];
+type Attribution = NonNullable<Project['attributions']>[number];
 
-// function ProjectAttribution({ attribution }: { attribution: Attribution }) {
-//   const _attribution = useStegaValue(attribution);
-//   return (
-//     <div>
-//       <h3>{_attribution.name}</h3>
-//       <ul>
-//         {_attribution.contacts?.map((contact) => (
-//           <li key={contact._id}>{contact.name}</li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
+const ProjectAttribution = memo(
+  function ProjectAttribution({
+    attribution,
+    SortableChild,
+    ...rest
+  }: React.ComponentPropsWithoutRef<'div'> & {
+    attribution: Attribution;
+    SortableChild: SortableChild;
+  }) {
+    const _attribution = useStegaValue(attribution);
+    return (
+      <div {...rest}>
+        <h3>{_attribution.name}</h3>
+        <ul>
+          <SortableChild
+            of={_attribution}
+            path='contacts'
+            content={_attribution.contacts}
+          >
+            {({ content, props }) => {
+              return content.map((contact) => {
+                const { key, ...rest } = props(contact);
+                return (
+                  <li key={key} {...rest}>
+                    {stegaClean(contact.name)}
+                  </li>
+                );
+              });
+            }}
+          </SortableChild>
+        </ul>
+      </div>
+    );
+  },
+  {
+    deep: true,
+    ignoreFunctions: true,
+  }
+);
 
-export function ProjectAttributions({ project }: { project: Project }) {
-  return (
-    <Sortable
-      document={project}
-      path='attributions'
-      getContent={(project) => project.attributions}
-    >
-      {({ content, props, SortableChild }) => (
-        <div>
-          {content.map((attr) => {
+export const ProjectAttributions = memo(
+  function ProjectAttributions({ project }: { project: Project }) {
+    return (
+      <Sortable
+        document={project}
+        path='attributions'
+        getContent={(project) => project.attributions}
+      >
+        {({ content, props, SortableChild }) =>
+          content.map((attr) => {
             const { key, ...rest } = props(attr);
             return (
-              <div key={key} {...rest}>
-                <div>
-                  <h3>{stegaClean(attr.name)}</h3>
-                  <ul>
-                    <SortableChild
-                      of={attr}
-                      path={`contacts`} // Make this a util function from parent
-                      content={attr.contacts}
-                    >
-                      {({ content, props }) => {
-                        return content.map((contact) => {
-                          const { key, ...rest } = props(contact);
-                          return (
-                            <li key={key} {...rest}>
-                              {stegaClean(contact.name)}
-                            </li>
-                          );
-                        });
-                      }}
-                    </SortableChild>
-                  </ul>
-                </div>
-              </div>
+              <ProjectAttribution
+                key={key}
+                attribution={attr}
+                SortableChild={SortableChild}
+                {...rest}
+              />
             );
-          })}
-        </div>
-      )}
-    </Sortable>
-  );
-}
+          })
+        }
+      </Sortable>
+    );
+  },
+  { deep: true }
+);
