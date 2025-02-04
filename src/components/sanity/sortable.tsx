@@ -123,19 +123,23 @@ export function SortableContent<
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function restoreRefs(o: any, existing: any) {
   if (Array.isArray(o))
-    return o.map((val, i): any =>
-      restoreRefs(
-        val,
-        (val && val._key && existing.find((s: any) => s?._key === val?._key)) ||
-          existing?.[i]
-      )
-    );
+    return o.map((val, i): any => {
+      const exisingVal =
+        (val &&
+          val._key &&
+          existing?.find((s: any) => s?._key === val?._key)) ||
+        existing?.[i];
+      return exisingVal ? restoreRefs(val, exisingVal) : val;
+    });
 
   if (typeof o === 'object') {
     if (o._type === 'reference') {
       return existing;
     }
-    return mapValues(o, (val, key): any => restoreRefs(val, existing?.[key]));
+    return mapValues(o, (val, key): any => {
+      const exisingVal = existing?.[key];
+      return exisingVal ? restoreRefs(val, existing?.[key]) : val;
+    });
   }
 
   return o;
