@@ -12,7 +12,6 @@ import { STUDIO_CONFIG } from '@/lib/env.client';
 
 type ContentItem = {
   _key: string;
-  _type: string;
 };
 
 type PageData = {
