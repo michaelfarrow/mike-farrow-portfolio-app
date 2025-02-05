@@ -1,3 +1,5 @@
+'use client';
+
 import { useStegaValue } from '@/hooks/stega';
 
 import { Figure } from '@/components/general/figure';
