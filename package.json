@@ -25,10 +25,11 @@
     "get-youtube-id": "^1.0.1",
     "lodash": "^4.17.21",
     "next": "^15.1.6",
-    "next-sanity": "9.8.47",
+    "next-sanity": "9.8.50",
     "num2fraction": "^1.2.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "title-case": "^4.3.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

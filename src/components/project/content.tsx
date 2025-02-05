@@ -8,7 +8,7 @@ import { memo } from '@/lib/react';
 import { ContentImage } from '@/components/content/image';
 import { ContentPicture } from '@/components/content/picture';
 import { ContentVideo } from '@/components/content/video';
-import { Array } from '@/components/sanity/array';
+import { Array, conditionalComponent as cc } from '@/components/sanity/array';
 import { PortableText } from '@/components/sanity/portable-text';
 import { Sortable, SortableChild } from '@/components/sanity/sortable';
 
@@ -79,13 +79,20 @@ export const ProjectContent = memo(
             }}
             components={{
               richText: (block) =>
-                block.content && <PortableText value={block.content || null} />,
-              responsiveImage: (block) => <ContentPicture image={block} />,
-              image: (block) => <ContentImage image={block} />,
-              video: (block) => <ContentVideo video={block} />,
-              temp: (block) => (
-                <TempBlock block={block} SortableChild={SortableChild} />
-              ),
+                cc(
+                  block.content?.length,
+                  <PortableText value={block.content || []} />
+                ),
+              responsiveImage: (block) =>
+                cc(block.main?.asset?.url, <ContentPicture image={block} />),
+              image: (block) =>
+                cc(block.asset?.url, <ContentImage image={block} />),
+              video: (block) => cc(block.url, <ContentVideo video={block} />),
+              temp: (block) =>
+                cc(
+                  block.names?.length,
+                  <TempBlock block={block} SortableChild={SortableChild} />
+                ),
             }}
           />
         )}

@@ -1,5 +1,6 @@
 'use client';
 
+import { isMaybePresentation } from '@sanity/presentation-comlink';
 import clsx from 'clsx';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -25,6 +26,7 @@ export function Image({
   ...rest
 }: ImageProps) {
   const image = useRef<HTMLImageElement>(null);
+  const isPresentation = isMaybePresentation();
 
   const [loaded, setLoaded] = useState(false);
 
@@ -46,9 +48,14 @@ export function Image({
   return (
     <NextImage
       {...rest}
+      loading={isPresentation ? 'eager' : 'lazy'}
       alt={useStegaValue(alt)}
       quality={quality || IMAGE_DEFAULT_QUALITY}
-      className={clsx(styles.image, loaded && styles.loaded, className)}
+      className={clsx(
+        styles.image,
+        (isPresentation || loaded) && styles.loaded,
+        className
+      )}
       ref={image}
       onLoad={_onLoad}
     />

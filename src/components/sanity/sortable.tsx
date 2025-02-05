@@ -8,10 +8,11 @@ import { LiteralUnion, Paths } from 'type-fest';
 import { ReactNode } from 'react';
 
 import { DisableStega } from '@/context/stega';
-import { useIsStudioEmbed } from '@/hooks/sanity';
+import { STUDIO_CONFIG } from '@/lib/env.client';
 
 type ContentItem = {
   _key: string;
+  _type: string;
 };
 
 type PageData = {
@@ -83,21 +84,16 @@ export function SortableContent<
   children: SortableChildren<T, P, C>;
   group?: string;
 }) {
-  const isStudioEmbed = useIsStudioEmbed();
-
   const { _id: id, _type: type } = document;
 
   return (
     <div
-      data-sanity={
-        isStudioEmbed
-          ? createDataAttribute({
-              id,
-              type,
-              path,
-            }).toString()
-          : undefined
-      }
+      data-sanity={createDataAttribute({
+        ...STUDIO_CONFIG,
+        id,
+        type,
+        path,
+      }).toString()}
     >
       {children({
         content,
@@ -105,13 +101,12 @@ export function SortableContent<
           return {
             key: item._key,
             'data-sanity-drag-group': group,
-            'data-sanity': isStudioEmbed
-              ? createDataAttribute({
-                  id,
-                  type,
-                  path: `${path}:${item._key}`,
-                }).toString()
-              : undefined,
+            'data-sanity': createDataAttribute({
+              ...STUDIO_CONFIG,
+              id,
+              type,
+              path: `${path}:${item._key}`,
+            }).toString(),
           };
         },
         SortableChild: createSortableChild({ document, path, group }),
