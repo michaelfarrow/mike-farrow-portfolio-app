@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
-import { albumHref } from '@/lib/link';
 import { createPage } from '@/lib/page';
 import { getAlbums } from '@/lib/sanity/queries/album';
+import { resolve } from '@/lib/sanity/resolve';
 
 const albums = createPage('albums', getAlbums, {
   metadata: () => ({
@@ -16,7 +16,11 @@ const albums = createPage('albums', getAlbums, {
             if (!album.slug?.current) return null;
             return (
               <li key={album._id}>
-                <Link href={albumHref({ slug: album.slug.current })}>
+                <Link
+                  href={resolve.album.href({
+                    slug: album.slug.current,
+                  })}
+                >
                   {album.name}
                 </Link>
               </li>

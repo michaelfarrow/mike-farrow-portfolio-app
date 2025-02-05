@@ -2,6 +2,7 @@
 
 /.studio
 /src/types/sanity.ts
+/src/lib/sanity/resolve.ts
 
 # dependencies
 /node_modules

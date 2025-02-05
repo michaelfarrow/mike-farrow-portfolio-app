@@ -1,9 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type AlbumPage from '@/app/albums/[slug]/page';
-import type ProjectPage from '@/app/projects/[slug]/page';
-
-export const projectHref = pageHref<typeof ProjectPage>('/projects/[slug]');
-export const albumHref = pageHref<typeof AlbumPage>('/albums/[slug]');
 
 type Params = { [key: string]: string };
 

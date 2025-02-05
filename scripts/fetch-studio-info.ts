@@ -20,11 +20,18 @@ function ensureDest() {
 }
 
 async function fetchSchema() {
-  const res = await fetch(
-    'https://raw.githubusercontent.com/michaelfarrow/mike-farrow-portfolio-studio/refs/heads/main/schema.json'
-  );
+  const res = await fetch(repoPath('schema.json'));
   const buffer = await res.arrayBuffer();
   return await writeFile(destPath('schema.json'), Buffer.from(buffer));
+}
+
+async function fetchResolver() {
+  const res = await fetch(repoPath('presentation/resolve.ts'));
+  const buffer = await res.arrayBuffer();
+  return await writeFile(
+    path.resolve('.', 'src/lib/sanity/resolve.ts'),
+    Buffer.from(buffer)
+  );
 }
 
 async function fetchVersion() {
@@ -37,6 +44,7 @@ async function main() {
   await ensureDest();
   await fetchVersion();
   await fetchSchema();
+  await fetchResolver();
 }
 
 main();

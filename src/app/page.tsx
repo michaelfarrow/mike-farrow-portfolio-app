@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
-import { projectHref } from '@/lib/link';
 import { createPage } from '@/lib/page';
 import { getProjects } from '@/lib/sanity/queries/project';
+import { resolve } from '@/lib/sanity/resolve';
 
 const projects = createPage('projects', getProjects, {
   metadata: () => ({
@@ -16,7 +16,11 @@ const projects = createPage('projects', getProjects, {
             if (!project.slug?.current) return null;
             return (
               <li key={project._id}>
-                <Link href={projectHref({ slug: project.slug.current })}>
+                <Link
+                  href={resolve.project.href({
+                    slug: project.slug.current,
+                  })}
+                >
                   {project.name}
                 </Link>
               </li>
