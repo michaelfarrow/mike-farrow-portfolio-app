@@ -29,10 +29,10 @@ const ProjectAttribution = memo(
           <SortableChild
             of={_attribution}
             path='contacts'
-            content={_attribution.contacts}
+            items={_attribution.contacts}
           >
-            {({ content, props }) => {
-              return content.map((contact) => {
+            {({ items, props }) => {
+              return items.map((contact) => {
                 const { key, ...rest } = props(contact);
                 return (
                   <li key={key} {...rest}>
@@ -58,10 +58,10 @@ export const ProjectAttributions = memo(
       <Sortable
         document={project}
         path='attributions'
-        getContent={(project) => project.attributions}
+        getItems={(project) => project.attributions}
       >
-        {({ content, props, SortableChild }) =>
-          content.map((attr) => {
+        {({ items, props, SortableChild }) =>
+          items.map((attr) => {
             const { key, ...rest } = props(attr);
             return (
               <ProjectAttribution

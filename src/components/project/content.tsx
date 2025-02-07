@@ -34,10 +34,10 @@ const TempBlock = memo(
   }) {
     return (
       <div {...rest}>
-        <SortableChild of={block} path='names' content={block.names}>
-          {({ content, props }) => (
+        <SortableChild of={block} path='names' items={block.names}>
+          {({ items, props }) => (
             <div style={{ display: 'flex' }}>
-              {content.map((name) => {
+              {items.map((name) => {
                 const { key, ...rest } = props(name);
                 return (
                   <div style={{ flex: 1, padding: 30 }} key={key} {...rest}>
@@ -99,14 +99,10 @@ const ProjectContentArray = memo(
             columns: (block) =>
               cc(
                 block.columns?.length,
-                <SortableChild
-                  of={block}
-                  path='columns'
-                  content={block.columns}
-                >
-                  {({ content, props, SortableChild }) => (
+                <SortableChild of={block} path='columns' items={block.columns}>
+                  {({ items, props, SortableChild }) => (
                     <div style={{ display: 'flex' }}>
-                      {content.map((column) => {
+                      {items.map((column) => {
                         const { key, ...rest } = props(column);
                         return (
                           <div
@@ -117,11 +113,11 @@ const ProjectContentArray = memo(
                             <SortableChild
                               of={column}
                               path='content'
-                              content={column.content}
+                              items={column.content}
                             >
-                              {({ content, props, SortableChild }) => (
+                              {({ items, props, SortableChild }) => (
                                 <ProjectContentArray
-                                  block={content}
+                                  block={items}
                                   SortableChild={SortableChild}
                                   props={props}
                                 />
@@ -157,11 +153,11 @@ export const ProjectContent = memo(
       <Sortable
         document={project}
         path='content'
-        getContent={(project) => project.content}
+        getItems={(project) => project.content}
       >
-        {({ content, props, SortableChild }) => (
+        {({ items, props, SortableChild }) => (
           <ProjectContentArray
-            block={content}
+            block={items}
             SortableChild={SortableChild}
             props={props}
           />

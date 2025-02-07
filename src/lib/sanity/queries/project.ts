@@ -53,6 +53,13 @@ export const projectQuery = defineQuery(`
         }
       },
     },
+    contentFlat[] {
+      ${arrayCommonQuery},
+      span,
+      content[] {
+        ${projectContentQuery}
+      },
+    },
     attributions[] {
       _key,
       name,

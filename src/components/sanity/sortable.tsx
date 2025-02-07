@@ -30,7 +30,7 @@ export type SortableChildren<
   P extends LiteralUnion<Paths<T>, string>,
   C extends ContentItem,
 > = (data: {
-  content: C[];
+  items: C[];
   props: SortableProps;
   SortableChild: ReturnType<typeof createSortableChild<T, P>>;
 }) => ReactNode;
@@ -42,21 +42,24 @@ function createSortableChild<
   function SortableChild<C extends ContentItem>({
     of,
     path: childPath,
-    content,
+    items,
     children,
+    disable,
   }: {
     of: ContentItem;
     path: string;
-    content: C[] | undefined;
+    items: C[] | undefined;
     children: SortableChildren<T, P, C>;
+    disable?: boolean;
   }) {
-    if (!content) return null;
+    if (!items) return null;
     return (
       <SortableContent
         document={document}
         path={`${path}:${of._key}.${childPath}`}
-        content={content}
+        items={items}
         group={group}
+        disable={disable}
       >
         {children}
       </SortableContent>
@@ -74,40 +77,50 @@ export function SortableContent<
   C extends ContentItem,
 >({
   document,
-  content,
+  items,
   path,
   children,
   group,
-}: {
+  disable,
+  ...rest
+}: Omit<React.ComponentPropsWithoutRef<'div'>, 'children'> & {
   document: T;
   path: P;
-  content: C[];
+  items: C[];
   children: SortableChildren<T, P, C>;
   group?: string;
+  disable?: boolean;
 }) {
   const { _id: id, _type: type } = document;
 
   return (
     <div
-      data-sanity={createDataAttribute({
-        ...STUDIO_CONFIG,
-        id,
-        type,
-        path,
-      }).toString()}
+      {...rest}
+      data-sanity={
+        disable
+          ? undefined
+          : createDataAttribute({
+              ...STUDIO_CONFIG,
+              id,
+              type,
+              path,
+            }).toString()
+      }
     >
       {children({
-        content,
+        items,
         props: (item) => {
           return {
             key: item._key,
             'data-sanity-drag-group': group,
-            'data-sanity': createDataAttribute({
-              ...STUDIO_CONFIG,
-              id,
-              type,
-              path: `${path}:${item._key}`,
-            }).toString(),
+            'data-sanity': disable
+              ? undefined
+              : createDataAttribute({
+                  ...STUDIO_CONFIG,
+                  id,
+                  type,
+                  path: `${path}:${item._key}`,
+                }).toString(),
           };
         },
         SortableChild: createSortableChild({ document, path, group }),
@@ -149,8 +162,8 @@ function restoreRefs(o: any, existing: any) {
 export function Sortable<
   T extends PageData,
   P extends LiteralUnion<Paths<T>, string>,
-  FetchContent extends (document: T) => C[] | undefined,
-  C extends ContentItem = FetchContent extends (
+  FetchItems extends (document: T) => C[] | undefined,
+  C extends ContentItem = FetchItems extends (
     document: T
   ) => (infer X extends ContentItem)[] | undefined
     ? X
@@ -158,56 +171,61 @@ export function Sortable<
 >({
   document,
   path,
-  getContent,
+  getItems,
   children,
   group,
-}: {
+  disable,
+  ...rest
+}: Omit<React.ComponentPropsWithoutRef<'div'>, 'children'> & {
   document: T;
   path: P;
-  getContent: FetchContent;
+  getItems: FetchItems;
   children: SortableChildren<T, P, C>;
   group?: string;
+  disable?: boolean;
 }) {
-  const initialContent = getContent(document);
+  const initialItems = getItems(document);
 
-  const content = useOptimistic<C[], SanityDocument<T>>(
-    initialContent || [],
-    (_content, action) => {
-      const content = initialContent;
-      const newContent = getContent(action.document);
+  const items = useOptimistic<C[], SanityDocument<T>>(
+    initialItems || [],
+    (_items, action) => {
+      const items = initialItems;
+      const newContent = getItems(action.document);
       if (
         action.id === document._id &&
         newContent /* &&
-        isEqual(getKeys(content), getKeys(newContent)) */
+        isEqual(getKeys(items), getKeys(newContent)) */
       ) {
-        console.log('mutation', path, action, getContent);
+        console.log('mutation', path, action, getItems);
 
         try {
-          const restored = restoreRefs(newContent, content);
-          console.log('mutation', newContent, content, restored);
+          const restored = restoreRefs(newContent, items);
+          console.log('mutation', newContent, items, restored);
           return restored;
         } catch (e) {
           console.error(e);
-          return content;
+          return items;
         }
       } else {
         console.log('mutation JERE');
       }
-      return content;
+      return items;
     }
   );
 
-  if (!content?.length) {
+  if (!items?.length) {
     return null;
   }
 
   return (
     <DisableStega>
       <SortableContent
+        {...rest}
         group={group}
         document={document}
-        content={content}
+        items={items}
         path={path}
+        disable={disable}
       >
         {children}
       </SortableContent>

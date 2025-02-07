@@ -6,7 +6,8 @@ import { getProject } from '@/lib/sanity/queries/project';
 
 import { Figure } from '@/components/general/figure';
 import { ProjectAttributions } from '@/components/project/attributions';
-import { ProjectContent } from '@/components/project/content';
+// import { ProjectContent } from '@/components/project/content';
+import { ProjectContentFlat } from '@/components/project/content-flat';
 import { SanityImage } from '@/components/sanity/image';
 
 const project = createPage('project', getProject, {
@@ -48,7 +49,8 @@ const project = createPage('project', getProject, {
             />
           </Figure>
         ) : null}
-        <ProjectContent project={project} />
+        {/* <ProjectContent project={project} /> */}
+        <ProjectContentFlat project={project} />
         <ProjectAttributions project={project} />
       </div>
     );
