@@ -32,7 +32,7 @@ const TempBlock = memo(
     SortableChild: SortableChild;
   }) {
     return (
-      <div {...rest}>
+      <div {...rest} className={styles.handle}>
         <SortableChild of={block} path='names' items={block.names}>
           {({ items, props }) => (
             <div style={{ display: 'flex' }}>
@@ -139,7 +139,7 @@ export const ProjectContentFlat = memo(
                 key={key}
                 className={styles.pad}
                 style={{
-                  gridColumn: item.span === 1 ? '1 / -1' : undefined,
+                  gridColumn: item.span === 1 ? undefined : '1 / -1',
                 }}
                 block={item}
                 SortableChild={SortableChild}
