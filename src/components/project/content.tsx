@@ -10,9 +10,14 @@ import { ContentPicture } from '@/components/content/picture';
 import { ContentVideo } from '@/components/content/video';
 import { Array, conditionalComponent as cc } from '@/components/sanity/array';
 import { PortableText } from '@/components/sanity/portable-text';
-import { Sortable, SortableChild } from '@/components/sanity/sortable';
+import {
+  Sortable,
+  SortableChild,
+  SortableProps,
+} from '@/components/sanity/sortable';
 
 type Project = NonNullable<Awaited<ReturnType<typeof getProject>>>;
+type Content = NonNullable<Project['content']>;
 type Person = Extract<
   NonNullable<Project['content']>[number],
   { _type: 'temp' }
@@ -52,6 +57,94 @@ const TempBlock = memo(
   }
 );
 
+const ProjectContentArray = memo(
+  function ProjectContentArray({
+    block,
+    SortableChild,
+    props,
+    ...rest
+  }: React.ComponentPropsWithoutRef<'div'> & {
+    block: Content;
+    SortableChild: SortableChild;
+    props: SortableProps;
+  }) {
+    return (
+      <div {...rest}>
+        <Array
+          value={block}
+          wrapper={(block, children) => {
+            const { key, ...rest } = props(block);
+            return (
+              <div key={key} {...rest}>
+                {children}
+              </div>
+            );
+          }}
+          components={{
+            richText: (block) =>
+              cc(
+                block.content?.length,
+                <PortableText value={block.content || []} />
+              ),
+            responsiveImage: (block) =>
+              cc(block.main?.asset?.url, <ContentPicture image={block} />),
+            image: (block) =>
+              cc(block.asset?.url, <ContentImage image={block} />),
+            video: (block) => cc(block.url, <ContentVideo video={block} />),
+            temp: (block) =>
+              cc(
+                block.names?.length,
+                <TempBlock block={block} SortableChild={SortableChild} />
+              ),
+            columns: (block) =>
+              cc(
+                block.columns?.length,
+                <SortableChild
+                  of={block}
+                  path='columns'
+                  content={block.columns}
+                >
+                  {({ content, props, SortableChild }) => (
+                    <div style={{ display: 'flex' }}>
+                      {content.map((column) => {
+                        const { key, ...rest } = props(column);
+                        return (
+                          <div
+                            key={key}
+                            {...rest}
+                            style={{ flex: 1, flexGrow: 1, flexBasis: 0 }}
+                          >
+                            <SortableChild
+                              of={column}
+                              path='content'
+                              content={column.content}
+                            >
+                              {({ content, props, SortableChild }) => (
+                                <ProjectContentArray
+                                  block={content}
+                                  SortableChild={SortableChild}
+                                  props={props}
+                                />
+                              )}
+                            </SortableChild>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </SortableChild>
+              ),
+          }}
+        />
+      </div>
+    );
+  },
+  {
+    deep: true,
+    ignoreFunctions: true,
+  }
+);
+
 export const ProjectContent = memo(
   function ProjectContent({
     project,
@@ -67,33 +160,10 @@ export const ProjectContent = memo(
         getContent={(project) => project.content}
       >
         {({ content, props, SortableChild }) => (
-          <Array
-            value={content}
-            wrapper={(block, children) => {
-              const { key, ...rest } = props(block);
-              return (
-                <div key={key} {...rest}>
-                  {children}
-                </div>
-              );
-            }}
-            components={{
-              richText: (block) =>
-                cc(
-                  block.content?.length,
-                  <PortableText value={block.content || []} />
-                ),
-              responsiveImage: (block) =>
-                cc(block.main?.asset?.url, <ContentPicture image={block} />),
-              image: (block) =>
-                cc(block.asset?.url, <ContentImage image={block} />),
-              video: (block) => cc(block.url, <ContentVideo video={block} />),
-              temp: (block) =>
-                cc(
-                  block.names?.length,
-                  <TempBlock block={block} SortableChild={SortableChild} />
-                ),
-            }}
+          <ProjectContentArray
+            block={content}
+            SortableChild={SortableChild}
+            props={props}
           />
         )}
       </Sortable>

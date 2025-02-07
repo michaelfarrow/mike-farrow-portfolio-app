@@ -17,6 +17,21 @@ export const projectsQuery = defineQuery(`
   }
 `);
 
+export const projectContentQuery = `
+  ${arrayCommonQuery},
+  _type == "image" => ${imageQuery},
+  _type == "responsiveImage" => ${responsiveImageQuery},
+  _type == "video" => ${videoQuery},
+  _type == "richText" => {
+    ...
+  },
+  _type == "temp" => {
+    names[] {
+      ...
+    }
+  }
+`;
+
 export const projectQuery = defineQuery(`
   *[
     _type == "project" &&
@@ -28,16 +43,13 @@ export const projectQuery = defineQuery(`
     description,
     thumbnail ${imageQuery},
     content[] {
-      ${arrayCommonQuery},
-      _type == "image" => ${imageQuery},
-      _type == "responsiveImage" => ${responsiveImageQuery},
-      _type == "video" => ${videoQuery},
-      _type == "richText" => {
-        ...
-      },
-      _type == "temp" => {
-        names[] {
-          ...
+      ${projectContentQuery},
+      _type == "columns" => {
+        columns[] {
+          ${arrayCommonQuery},
+          content[] {
+            ${projectContentQuery}
+          },
         }
       },
     },

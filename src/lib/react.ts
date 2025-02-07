@@ -60,8 +60,9 @@ function sanitize(o: any): any {
 
 export function memo<P>(
   Component: FunctionComponent<P>,
-  options?: { deep?: boolean; ignoreFunctions?: boolean }
+  options?: { disable?: boolean; deep?: boolean; ignoreFunctions?: boolean }
 ) {
+  if (options?.disable) return Component;
   return reactMemo(Component, (prev, next) => {
     const _prev = options?.ignoreFunctions ? sanitize(prev) : prev;
     const _next = options?.ignoreFunctions ? sanitize(next) : next;

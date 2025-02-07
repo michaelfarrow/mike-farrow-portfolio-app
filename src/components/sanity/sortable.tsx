@@ -19,17 +19,19 @@ type PageData = {
   _type: string;
 };
 
+export type SortableProps = (item: ContentItem) => {
+  key: string;
+  'data-sanity': string | undefined;
+  [key: `data-sanity-${string}`]: string | undefined;
+};
+
 export type SortableChildren<
   T extends PageData,
   P extends LiteralUnion<Paths<T>, string>,
   C extends ContentItem,
 > = (data: {
   content: C[];
-  props: (item: C) => {
-    key: string;
-    'data-sanity': string | undefined;
-    [key: `data-sanity-${string}`]: string | undefined;
-  };
+  props: SortableProps;
   SortableChild: ReturnType<typeof createSortableChild<T, P>>;
 }) => ReactNode;
 
@@ -170,7 +172,8 @@ export function Sortable<
 
   const content = useOptimistic<C[], SanityDocument<T>>(
     initialContent || [],
-    (content, action) => {
+    (_content, action) => {
+      const content = initialContent;
       const newContent = getContent(action.document);
       if (
         action.id === document._id &&
