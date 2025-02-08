@@ -46,17 +46,6 @@ export const projectQuery = defineQuery(`
     description,
     descriptionLong,
     thumbnail ${imageQuery},
-    content[] {
-      ${projectContentQuery},
-      _type == "columns" => {
-        columns[] {
-          ${arrayCommonQuery},
-          content[] {
-            ${projectContentQuery}
-          },
-        }
-      },
-    },
     contentFlat[] {
       ${arrayCommonQuery},
       span,

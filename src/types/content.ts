@@ -5,7 +5,11 @@ import {
   internalGroqTypeReferenceTo,
 } from '@/types/sanity';
 
-export type SchemaTypes = AllSanitySchemaTypes['_type'];
+export type SchemaTypes = Extract<
+  AllSanitySchemaTypes,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { _type: any }
+>['_type'];
 
 export type SchemaType<T extends SchemaTypes> = PartialDeep<
   ExpandRefs<Extract<AllSanitySchemaTypes, { _type: T }>>,
