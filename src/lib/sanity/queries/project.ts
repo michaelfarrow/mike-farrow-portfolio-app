@@ -46,7 +46,7 @@ export const projectQuery = defineQuery(`
     description,
     descriptionLong,
     thumbnail ${imageQuery},
-    contentFlat[] {
+    content[] {
       ${arrayCommonQuery},
       span,
       content[] {
