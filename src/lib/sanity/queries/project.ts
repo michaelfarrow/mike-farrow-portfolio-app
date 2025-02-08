@@ -25,6 +25,9 @@ export const projectContentQuery = `
   _type == "richText" => {
     ...
   },
+  _type == "md" => {
+    ...
+  },
   _type == "temp" => {
     names[] {
       ...
@@ -41,6 +44,7 @@ export const projectQuery = defineQuery(`
     _type,
     name,
     description,
+    descriptionLong,
     thumbnail ${imageQuery},
     content[] {
       ${projectContentQuery},

@@ -8,7 +8,7 @@ import { LiteralUnion, Paths } from 'type-fest';
 import { ReactNode } from 'react';
 
 import { DisableStega } from '@/context/stega';
-import { STUDIO_CONFIG } from '@/lib/env.client';
+import { STUDIO_BASE_URL, STUDIO_CONFIG } from '@/lib/env.client';
 
 type ContentItem = {
   _key: string;
@@ -101,6 +101,7 @@ export function SortableContent<
           ? undefined
           : createDataAttribute({
               ...STUDIO_CONFIG,
+              baseUrl: STUDIO_BASE_URL,
               id,
               type,
               path,
@@ -117,6 +118,7 @@ export function SortableContent<
               ? undefined
               : createDataAttribute({
                   ...STUDIO_CONFIG,
+                  baseUrl: STUDIO_BASE_URL,
                   id,
                   type,
                   path: `${path}:${item._key}`,

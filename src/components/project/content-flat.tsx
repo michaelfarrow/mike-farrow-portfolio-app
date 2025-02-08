@@ -3,10 +3,11 @@
 import clsx from 'clsx';
 import { stegaClean } from 'next-sanity';
 
-import type { getProject } from '@/lib//sanity/queries/project';
+import { getProject } from '@/lib//sanity/queries/project';
 import { memo } from '@/lib/react';
 
 import { ContentImage } from '@/components/content/image';
+import { Markdown } from '@/components/content/markdown';
 import { ContentPicture } from '@/components/content/picture';
 import { ContentVideo } from '@/components/content/video';
 import { Array, conditionalComponent as cc } from '@/components/sanity/array';
@@ -18,7 +19,7 @@ import styles from './content-flat.module.css';
 type Project = NonNullable<Awaited<ReturnType<typeof getProject>>>;
 type ContentFlatItem = NonNullable<Project['contentFlat']>[number];
 type Person = Extract<
-  NonNullable<Project['content']>[number],
+  NonNullable<NonNullable<Project['contentFlat']>[number]['content']>[number],
   { _type: 'temp' }
 >;
 
@@ -60,13 +61,14 @@ const ProjectContentFlatItem = memo(
   function ProjectContentFlatItem({
     block,
     SortableChild,
+    className,
     ...rest
   }: React.ComponentPropsWithoutRef<'div'> & {
     block: ContentFlatItem;
     SortableChild: SortableChild;
   }) {
     return (
-      <div {...rest} className={styles.handle}>
+      <div {...rest} className={clsx(className, styles.handle)}>
         <SortableChild of={block} path='content' items={block.content}>
           {({ items, props, SortableChild }) => (
             <Array
@@ -74,11 +76,7 @@ const ProjectContentFlatItem = memo(
               wrapper={(child, children) => {
                 const { key, ...rest } = props(child);
                 return (
-                  <div
-                    key={key}
-                    className={clsx(child._type === 'temp' && styles.pad)}
-                    {...rest}
-                  >
+                  <div key={key} {...rest}>
                     {children}
                   </div>
                 );
@@ -89,6 +87,8 @@ const ProjectContentFlatItem = memo(
                     block.content?.length,
                     <PortableText value={block.content || []} />
                   ),
+                md: (block) =>
+                  cc(block.content?.length, <Markdown value={block.content} />),
                 responsiveImage: (block) =>
                   cc(block.main?.asset?.url, <ContentPicture image={block} />),
                 image: (block) =>
@@ -118,18 +118,14 @@ export const ProjectContentFlat = memo(
   }: {
     project: NonNullable<Awaited<ReturnType<typeof getProject>>>;
   }) {
-    if (!project.content) return null;
+    if (!project.contentFlat) return null;
 
     return (
       <Sortable
         document={project}
         path='contentFlat'
         getItems={(project) => project.contentFlat}
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 20,
-        }}
+        className={styles.grid}
       >
         {({ items, props, SortableChild }) =>
           items.map((item) => {
@@ -137,10 +133,10 @@ export const ProjectContentFlat = memo(
             return (
               <ProjectContentFlatItem
                 key={key}
-                className={styles.pad}
-                style={{
-                  gridColumn: item.span === 1 ? undefined : '1 / -1',
-                }}
+                className={clsx(
+                  styles.gridItem,
+                  item.span === 2 && styles.gridItemFull
+                )}
                 block={item}
                 SortableChild={SortableChild}
                 data-sanity-drag-flow='horizontal'

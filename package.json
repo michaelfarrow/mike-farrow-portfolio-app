@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@portabletext/react": "^3.2.0",
+    "@vercel/stega": "^0.1.2",
     "change-case": "^5.4.4",
     "clsx": "^2.1.1",
     "get-youtube-id": "^1.0.1",
@@ -29,6 +30,7 @@
     "num2fraction": "^1.2.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.3",
     "title-case": "^4.3.2"
   },
   "devDependencies": {
@@ -46,7 +48,8 @@
     "patch-package": "^8.0.0",
     "tsx": "^4.19.2",
     "type-fest": "^4.32.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-plugin-css-modules": "^5.1.0"
   },
   "studio": {
     "ref": "main"

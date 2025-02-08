@@ -4,6 +4,7 @@ import { getExifData } from '@/lib/image';
 import { createPage } from '@/lib/page';
 import { getProject } from '@/lib/sanity/queries/project';
 
+import { Markdown } from '@/components/content/markdown';
 import { Figure } from '@/components/general/figure';
 import { ProjectAttributions } from '@/components/project/attributions';
 // import { ProjectContent } from '@/components/project/content';
@@ -16,7 +17,7 @@ const project = createPage('project', getProject, {
     robots: hideFromSearchEngines || isPrivate ? { index: false } : undefined,
   }),
   render: (project) => {
-    const { name, description, thumbnail } = project;
+    const { name, description, descriptionLong, thumbnail } = project;
 
     const exif = thumbnail ? getExifData(thumbnail) : null;
     const settings =
@@ -29,6 +30,9 @@ const project = createPage('project', getProject, {
         </div>
         <div>{name ? <h1>{name}</h1> : null}</div>
         <div>{description ? <p>{description}</p> : null}</div>
+        <div>
+          {descriptionLong ? <Markdown value={descriptionLong} /> : null}
+        </div>
         {thumbnail ? (
           <Figure
             caption={
