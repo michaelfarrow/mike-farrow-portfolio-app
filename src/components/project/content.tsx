@@ -1,6 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
+import { stegaClean } from 'next-sanity';
 
 import { getProject } from '@/lib//sanity/queries/project';
 import { memo } from '@/lib/react';
@@ -86,13 +87,13 @@ export const ProjectContent = memo(
                 key={key}
                 className={clsx(
                   styles.gridItem,
-                  item.span === 2 && styles.gridItemFull
+                  stegaClean(item.span) === 'full' && styles.gridItemFull
                 )}
                 block={item}
                 SortableChild={SortableChild}
                 data-sanity-drag-flow='horizontal'
                 // data-sanity-drag-flow={
-                //   item.span === 1 ? 'vertical' : 'horizontal'
+                //   stegaClean(item.span) === 'full ? 'horizontal' : 'vertical'
                 // }
                 {...rest}
               />

@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
-import { getExifData } from '@/lib/image';
+// import { getExifData } from '@/lib/image';
 import { createPage } from '@/lib/page';
 import { getProject } from '@/lib/sanity/queries/project';
 
 import { Markdown } from '@/components/content/markdown';
-import { Figure } from '@/components/general/figure';
+// import { Figure } from '@/components/general/figure';
 import { ProjectAttributions } from '@/components/project/attributions';
 import { ProjectContent } from '@/components/project/content';
 import { SanityImage } from '@/components/sanity/image';
@@ -18,9 +18,9 @@ const project = createPage('project', getProject, {
   render: (project) => {
     const { name, description, descriptionLong, thumbnail } = project;
 
-    const exif = thumbnail ? getExifData(thumbnail) : null;
-    const settings =
-      exif?.settings && Object.values(exif.settings).filter((v) => !!v);
+    // const exif = thumbnail ? getExifData(thumbnail) : null;
+    // const settings =
+    //   exif?.settings && Object.values(exif.settings).filter((v) => !!v);
 
     return (
       <div style={{ maxWidth: 1500, margin: 'auto' }}>
@@ -33,25 +33,59 @@ const project = createPage('project', getProject, {
           {descriptionLong ? <Markdown value={descriptionLong} /> : null}
         </div>
         {thumbnail ? (
-          <Figure
-            caption={
-              (exif && (
-                <>
-                  {exif.camera && <div>{exif.camera}</div>}
-                  {exif.lens && <div>{exif.lens}</div>}
-                  {(settings && <div>{settings.join(' ')}</div>) || null}
-                </>
-              )) ||
-              null
-            }
-          >
-            <SanityImage
-              image={thumbnail}
-              sizes='(max-width: 800px) 100vw, 800px'
-              style={{ width: '100%', maxWidth: 800, height: 'auto' }}
-            />
-          </Figure>
-        ) : null}
+          <SanityImage
+            image={thumbnail}
+            sizes='(max-width: 200px) 100vw, 200px'
+            ratio={1}
+            style={{
+              width: '100%',
+              height: 'auto',
+              maxWidth: 200,
+            }}
+          />
+        ) : // <div
+        //   style={{
+        //     width: '100%',
+        //     maxWidth: 200,
+        //     height: 'auto',
+        //     overflow: 'hidden',
+        //   }}
+        // >
+        //   <div style={{ paddingTop: '100%', position: 'relative' }}>
+        //     <SanityImage
+        //       image={thumbnail}
+        //       sizes='(max-width: 200px) 100vw, 200px'
+        //       ratio={1}
+        //       style={{
+        //         position: 'absolute',
+        //         top: 0,
+        //         left: 0,
+        //         width: '100%',
+        //         height: '100%',
+        //         objectFit: 'cover',
+        //       }}
+        //     />
+        //   </div>
+        // </div>
+        // <Figure
+        //   caption={
+        //     (exif && (
+        //       <>
+        //         {exif.camera && <div>{exif.camera}</div>}
+        //         {exif.lens && <div>{exif.lens}</div>}
+        //         {(settings && <div>{settings.join(' ')}</div>) || null}
+        //       </>
+        //     )) ||
+        //     null
+        //   }
+        // >
+        //   <SanityImage
+        //     image={thumbnail}
+        //     sizes='(max-width: 400px) 100vw, 400px'
+        //     style={{ width: '100%', maxWidth: 400, height: 'auto' }}
+        //   />
+        // </Figure>
+        null}
         <ProjectContent project={project} />
         <ProjectAttributions project={project} />
       </div>

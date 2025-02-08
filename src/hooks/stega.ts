@@ -26,7 +26,6 @@ export function useStegaValueDecode(o?: string) {
   const stega = useStega();
   if (!o) return undefined;
   const decoded: { href?: string } | undefined = vercelStegaDecode(o);
-  console.log(decoded?.href);
   return (
     (stega &&
       decoded?.href
