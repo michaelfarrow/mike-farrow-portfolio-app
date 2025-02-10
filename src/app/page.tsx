@@ -16,13 +16,7 @@ const projects = createPage('projects', getProjects, {
             if (!project.slug?.current) return null;
             return (
               <li key={project._id}>
-                <Link
-                  href={resolve.project.href({
-                    slug: project.slug.current,
-                  })}
-                >
-                  {project.name}
-                </Link>
+                <Link href={resolve.project.href(project)}>{project.name}</Link>
               </li>
             );
           })}

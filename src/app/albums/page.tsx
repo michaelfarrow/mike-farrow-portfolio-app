@@ -16,13 +16,7 @@ const albums = createPage('albums', getAlbums, {
             if (!album.slug?.current) return null;
             return (
               <li key={album._id}>
-                <Link
-                  href={resolve.album.href({
-                    slug: album.slug.current,
-                  })}
-                >
-                  {album.name}
-                </Link>
+                <Link href={resolve.album.href(album)}>{album.name}</Link>
               </li>
             );
           })}
