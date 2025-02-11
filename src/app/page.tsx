@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { hasSlug } from '@/lib/document';
 import { createPage } from '@/lib/page';
 import { getProjects } from '@/lib/sanity/queries/project';
 import { resolve } from '@/lib/sanity/resolve';
@@ -13,10 +14,10 @@ const projects = createPage('projects', getProjects, {
       <div>
         <ul>
           {projects.map((project) => {
-            if (!project.slug?.current) return null;
+            if (!hasSlug(project)) return null;
             return (
               <li key={project._id}>
-                <Link href={resolve.project.href(project)}>{project.name}</Link>
+                <Link href={resolve.project(project)}>{project.name}</Link>
               </li>
             );
           })}

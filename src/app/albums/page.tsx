@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { hasSlug } from '@/lib/document';
 import { createPage } from '@/lib/page';
 import { getAlbums } from '@/lib/sanity/queries/album';
 import { resolve } from '@/lib/sanity/resolve';
@@ -13,10 +14,10 @@ const albums = createPage('albums', getAlbums, {
       <div>
         <ul>
           {albums.map((album) => {
-            if (!album.slug?.current) return null;
+            if (!hasSlug(album)) return null;
             return (
               <li key={album._id}>
-                <Link href={resolve.album.href(album)}>{album.name}</Link>
+                <Link href={resolve.album(album)}>{album.name}</Link>
               </li>
             );
           })}

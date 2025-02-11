@@ -23,6 +23,7 @@
     "@vercel/stega": "^0.1.2",
     "change-case": "^5.4.4",
     "clsx": "^2.1.1",
+    "flat": "^6.0.1",
     "get-youtube-id": "^1.0.1",
     "lodash": "^4.17.21",
     "next": "^15.1.6",
