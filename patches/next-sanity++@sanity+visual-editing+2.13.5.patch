@@ -1,0 +1,15 @@
+diff --git a/node_modules/next-sanity/node_modules/@sanity/visual-editing/dist/react/index.js b/node_modules/next-sanity/node_modules/@sanity/visual-editing/dist/react/index.js
+index 2893582..7840218 100644
+--- a/node_modules/next-sanity/node_modules/@sanity/visual-editing/dist/react/index.js
++++ b/node_modules/next-sanity/node_modules/@sanity/visual-editing/dist/react/index.js
+@@ -1277,8 +1277,8 @@ const SchemaProvider = function(props) {
+             parent
+           };
+         if (schemaType_1.type === "union") {
+-          const name_0 = next.startsWith("[_key==") ? resolvedTypes?.get(node_0.id)?.get([prevPath.join("."), next].filter(Boolean).join("")) : next;
+-          return fieldFromPath(schemaType_1.of.find((item) => item.type === "unionOption" ? item.name === name_0 : item), rest, schemaType_1, [...prevPath, next]);
++          const name_0 = next.startsWith("[_key==") ? resolvedTypes?.get(node_0.id)?.get([prevPath.map((item,i)=>i!==0&&!item.startsWith("[_key==")?`.${item}`:item).join(""), next].filter(Boolean).join("")) : next;
++          return fieldFromPath(schemaType_1.of.find((item) => item.type === "unionOption" ? (item.name === name_0 || (Array.isArray(name_0) && item.name === name_0.join("")) ) : item), rest, schemaType_1, [...prevPath, next]);
+         } else {
+           if (schemaType_1.type === "unionOption")
+             return next ? fieldFromPath(schemaType_1.value, path_0, schemaType_1, prevPath) : {
