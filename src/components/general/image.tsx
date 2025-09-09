@@ -12,7 +12,7 @@ import { useTimeout } from '@/hooks/timeout';
 
 import styles from './image.module.css';
 
-export const IMAGE_DEFAULT_QUALITY = 70;
+export const IMAGE_DEFAULT_QUALITY = 75;
 
 export interface ImageProps extends NextImageProps {
   onImageLoaded?: () => void;
