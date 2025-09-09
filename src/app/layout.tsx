@@ -1,4 +1,4 @@
-import VisualEditing from 'next-sanity/visual-editing';
+import { VisualEditing } from 'next-sanity/visual-editing';
 
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
