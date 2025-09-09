@@ -1,4 +1,4 @@
-import { defineLive } from 'next-sanity';
+import { defineLive } from 'next-sanity/live';
 
 import { STUDIO_API_READ_TOKEN } from '@/lib/env';
 import { client } from '@/lib/sanity/client';

@@ -1,8 +1,8 @@
 diff --git a/node_modules/next-sanity/node_modules/@sanity/visual-editing/dist/react/index.js b/node_modules/next-sanity/node_modules/@sanity/visual-editing/dist/react/index.js
-index 2893582..7840218 100644
+index b33401e..b0487f0 100644
 --- a/node_modules/next-sanity/node_modules/@sanity/visual-editing/dist/react/index.js
 +++ b/node_modules/next-sanity/node_modules/@sanity/visual-editing/dist/react/index.js
-@@ -1277,8 +1277,8 @@ const SchemaProvider = function(props) {
+@@ -1436,8 +1436,8 @@ const SchemaProvider = function(props) {
              parent
            };
          if (schemaType_1.type === "union") {
